@@ -10,6 +10,7 @@ from transformers import RobertaTokenizer, T5ForConditionalGeneration
 
 model_text_to_code = pipeline(
     model="Lazyhope/RepoSim",
+    #model="Lazyhope/unixcoder-clone-detection",
     trust_remote_code=True,
     device_map="auto")
 
@@ -32,14 +33,22 @@ def encode(string, model_type):
         final_t = embedding.squeeze()
     return final_t
 
-#CODE SUMMARIZATION
+# CODE SUMMARIZATION
 tokenizer = RobertaTokenizer.from_pretrained('Salesforce/codet5-base-multi-sum')
 summary_model = T5ForConditionalGeneration.from_pretrained('Salesforce/codet5-base-multi-sum')
 
+
+# pipe = pipeline("feature-extraction", model="microsoft/unixcoder-base")
+# tokenizer = AutoTokenizer.from_pretrained("microsoft/unixcoder-base")
+# summary_model = AutoModel.from_pretrained("microsoft/unixcoder-base")
+
 def generate_summary(text):
+    
+    
     input_ids = tokenizer.encode(text, return_tensors="pt")
     generated_ids = summary_model.generate(input_ids, max_length=20)
     summary = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
+    print(summary)
     return summary
 
 #SEARCH 
@@ -66,7 +75,7 @@ def similarity_search(user_query,all_pes,type):
         embed_type = 'codeEmbedding'
 
      # Compute cosine similarity
-    print(all_pes_df)
+    # print(all_pes_df)
     all_pes_df[embed_type] = all_pes_df[embed_type].apply(lambda x: torch.tensor(list(map(float, x[1:-1].split()))))
 
     cos_similarities = cosine_similarity(user_query_emb.reshape(1, -1), np.vstack(all_pes_df[embed_type]))  

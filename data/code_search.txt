@@ -1,0 +1,13 @@
+19/10/23
+client.search_Registry("random.randint(1, 1000)","pe","code")
+
+Searched for "random.randint(1, 1000)"
+    peId             peName                                        description  cosine_similarity
+3     58     NumberProducer  This function is called to generate a random s...           0.752691
+4     59         PrintPrime  Process the sequence of words in the sequence ...           0.671739
+9     64  TestMultiProducer  Process the sequence of sequence sequence sequ...           0.635483
+2     57            IsPrime               check if the input is a prime or not           0.619670
+12    67       TestProducer  Process the sequence of unknown - sequence fea...           0.552182
+
+
+

@@ -1,0 +1,107 @@
+19/10/23
+client.search_Registry("PE to perform sentiment analysis on a text","pe","text")
+
+Searched for "PE to perform sentiment analysis on a text"
+    peId                peName                                        description  cosine_similarity
+4     59            PrintPrime  Process the sequence of words in the sequence ...           0.432774
+21    76       Tokenization_WD  Process the given data and return the tag and ...           0.393012
+8     63  TestDelayOneInOneOut  This method is called by the PE base class to ...           0.335588
+20    75              ReadData  This method is called by the PE base class to ...           0.335588
+14    69           WordCounter  This method is called by the PE base class to ...           0.335588
+
+
+client.search_Registry("PE to produce a random word", "pe", "text")
+Searched for "PE to produce a random word"
+    peId                 peName                                        description  cosine_similarity
+3     58         NumberProducer  This function is called to generate a random s...           0.368350
+4     59             PrintPrime  Process the sequence of words in the sequence ...           0.360397
+20    75               ReadData  This method is called by the PE base class to ...           0.319854
+11    66  TestOneInOneOutWriter  This method is called by the PE base class to ...           0.319854
+13    68        TestTwoInOneOut  This method is called by the PE base class to ...           0.319854
+
+
+client.search_Registry("This PE produces a random word as an output.", "pe", "text")
+Searched for "This PE produces a random word as an output."
+    peId                 peName                                        description  cosine_similarity
+3     58         NumberProducer  This function is called to generate a random s...           0.394160
+4     59             PrintPrime  Process the sequence of words in the sequence ...           0.368818
+11    66  TestOneInOneOutWriter  This method is called by the PE base class to ...           0.323758
+13    68        TestTwoInOneOut  This method is called by the PE base class to ...           0.323758
+5     60       ProvenanceLogger  This method is called by the PE base class to ...           0.323758
+
+
+
+client2.search_Registry("check for prime input", "pe", "text")
+Searched for "check for prime input"
+   peId             peName                                        description  cosine_similarity
+2    57            IsPrime               check if the input is a prime or not           0.894669
+3    58     NumberProducer  This function is called to generate a random s...           0.160477
+1    56  SentiWordNetScore                             Process the n - grams.           0.129486
+9    64  TestMultiProducer  Process the sequence of sequence sequence sequ...           0.107434
+4    59         PrintPrime  Process the sequence of words in the sequence ...           0.104572
+
+
+client2.search_Registry("random word", "pe", "text")
+Searched for "random word"
+    peId             peName                                        description  cosine_similarity
+3     58     NumberProducer  This function is called to generate a random s...           0.432106
+4     59         PrintPrime  Process the sequence of words in the sequence ...           0.287090
+21    76    Tokenization_WD  Process the given data and return the tag and ...           0.211147
+1     56  SentiWordNetScore                             Process the n - grams.           0.187711
+2     57            IsPrime               check if the input is a prime or not           0.165190
+
+
+
+
+
+
+
+
+This does not work very well at all.
+performance is slightly better when using the function name and a very simple description
+picking one word from the description seems to work slightly better (as seen in prime).
+
+This could never work that well currently, as the description generation causes lots of problems.
+
+
+Description                                                             pe_name
+Process the NLTK file.	                                                AFINNSentimeScore
+Process the n - grams.	                                                SentiWordNetScore
+check if the input is a prime or not	                                IsPrime
+This function is called to generate a random sequence of unique IDs.	NumberProducer
+Process the sequence of words in the sequence of words in the
+ sequence of words in the sequence	PrintPrime
+This method is called by the PE base class to process the given data.	ProvenanceLogger
+This method is called by the PE base class to process the given data.	RandomFilter
+This method is called by the PE base class to process the given data.	RandomWordProducer
+This method is called by the PE base class to process the given data.	TestDelayOneInOneOut
+Process the sequence of sequence sequence sequence.	TestMultiProducer
+This method is called by the PE base class to process the given data.	TestOneInOneOut
+This method is called by the PE base class to process the given data.	TestOneInOneOutWriter
+Process the sequence of unknown - sequence feature sets.	            TestProducer
+This method is called by the PE base class to process the given data.	TestTwoInOneOut
+This method is called by the PE base class to process the given data.	WordCounter
+Process the nagios.	ComputeSentiWordNetScore
+Process the nagios.	FindState
+Process the sequence of terms in the sequence.	                        GlobalHappyState
+Private method for processing a single header.	                        HappyState
+Process a single agios.	                                                PrintAFINNScore
+This method is called by the PE base class to process the given data.	ReadData
+Process the given data and return the tag and wordnet definitions.	    Tokenization_WD
+
+
+
+Searched for "agios"
+    peId                    peName                                        description  cosine_similarity
+19    74           PrintAFINNScore                            Process a single agios.           0.656211
+16    71                 FindState                                Process the nagios.           0.450241
+15    70  ComputeSentiWordNetScore                                Process the nagios.           0.450241
+1     56         SentiWordNetScore                             Process the n - grams.           0.210006
+21    76           Tokenization_WD  Process the given data and return the tag and ...           0.085955
+
+
+
+We can see here that the description lookup is functional, but descriptions do not match the functions.
+
+I think that it is being confused by all the boiler plate code required by laminar to generate PEs.
+If we restrict what information we pass in by removing the 'bookends' then we should get better results.

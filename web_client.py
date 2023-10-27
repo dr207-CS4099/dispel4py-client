@@ -75,7 +75,7 @@ def get_payload(code: any):
 
     #serialize code
     pickled = codecs.encode(pickle.dumps(code), "base64").decode()
-
+    # print(len(pickled))
     return pickled
 
 def get_objects(results):
