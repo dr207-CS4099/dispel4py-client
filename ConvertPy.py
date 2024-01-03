@@ -110,7 +110,8 @@ def dumpMethodAST(thisRuleName, simpleTree):
     global thisFileName, thisClassName, thisMethodName, beginLine, endLine, totalMethods, outputFile
     # TODO do we actually care about there being a class?
     # only write the functions to the JSON file, to avoid duplication
-    if (thisClassName != None and thisRuleName == "function_def_raw"):
+    # TODO test the effectiveness of this using functions and using class (on similarity)
+    if (thisClassName != None and thisRuleName == "class_def_raw"):
         # print(simpleTree)
         # TODO what is this doing?
         if(len(simpleTree) == 2):
@@ -128,6 +129,7 @@ def dumpMethodAST(thisRuleName, simpleTree):
 
         # write to file
         print("writing to file")
+        print(tmp)
         f = open(outputFile, "a")
         json.dump(tmp, f)
         # f.write(str(tmp))
@@ -264,7 +266,22 @@ def getSerializedTree(tree, tokens: CommonTokenStream):
 
 # call from client
 def convertPy(code_str):
-    global vocab
+    global vocab, outputFile
+    input_stream = InputStream(code_str)
+    outputFile = "output.json"
+
+    lexer = PythonLexer(input_stream)
+    vocab = lexer.symbolicNames
+
+    stream = CommonTokenStream(lexer)
+    parser = PythonParser(stream)
+    # print(parser)
+    tree = parser.file_input()
+ 
+    setRuleNames(parser)
+    setSymbolicNames(lexer)
+    getSerializedTree(tree, stream)
+
 
 
 
@@ -281,10 +298,6 @@ def main(argv):
     parser = PythonParser(stream)
     # print(parser)
     tree = parser.file_input()
-    # print()
-    # print(Trees.toStringTree(tree, None, parser))
-    # print(tree.toStringTree(parser))
-    # print(parser.ruleNames)
 
     setRuleNames(parser)
     setSymbolicNames(lexer)
