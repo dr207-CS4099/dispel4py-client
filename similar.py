@@ -367,6 +367,20 @@ def counter_vectorize(rpath, wpath):
     with open(wpath, "wb") as outf:
         pickle.dump((vectorizer, counter_matrix), outf)
 
+# counter vectorisation, from dataset instead of file
+# TODO potentially remove write to file
+def counter_vectorize_from_db(dataset, wpath):
+    # TODO using just the first value in each PE as using class based definitions
+    # may need to change later
+    #TODO REMOVE JSON LOADS FROM HERE
+    # documents = [feature_list_to_doc(json.loads(x)) for x in dataset]
+    # TODO
+    documents = [feature_list_to_doc(x[0]) for x in dataset]
+    vectorizer = CountVectorizer(min_df=1, binary=True)
+    counter_matrix = vectorizer.fit_transform(documents)
+    with open(wpath, "wb") as outf:
+        pickle.dump((vectorizer, counter_matrix), outf)
+
 
 def read_all_records(rpath):
     with open(rpath, "r") as f:
@@ -987,7 +1001,9 @@ def test_record_at_index(idx):
 def featurize_and_test_record(record_files, keywords):
     set_tmp = None
     record_final = None
+    print(record_files)
     for record_file in record_files:
+        print(record_file)
         record = read_and_featurize_record_file(record_file)
         if record is not None:
             record_final = record
@@ -1006,6 +1022,33 @@ def featurize_and_test_record(record_files, keywords):
         record_final["features"] = list(set_tmp.elements())
     if len(record_final["features"]) > 0:
         print_similar_and_completions(record_final, records, vectorizer, counter_matrix)
+
+
+# skips reading from a file
+def featurize_and_test_record_from_db(record_jsons, keywords):
+    set_tmp = None
+    record_final = None
+    for record in record_jsons:
+        # featurise the input code json
+        record["features"] = collect_features_as_list(record["ast"], False, False)[0]
+        record["index"] = -1
+        if record is not None:
+            record_final = record
+            if set_tmp is not None:
+                set_tmp = set_tmp & Counter(record["features"])
+            else:
+                set_tmp = Counter(record["features"])
+            # need to figure out how to merge asts as well
+    if set_tmp is None:
+        set_tmp = Counter()
+    for keyword in keywords:
+        set_tmp[vocab.get_index(keyword)] += 1
+    if record_final is None:
+        record_final = {"ast": None, "index": -1, "features": list(set_tmp.elements())}
+    else:
+        record_final["features"] = list(set_tmp.elements())
+    if len(record_final["features"]) > 0:
+        print_similar_and_completions(record_final, options.records, options.vectorizer, options.counter_matrix)
 
 
 def test_all():
@@ -1049,18 +1092,100 @@ def setup(records_file):
         logging.info("Done computing counter matrix.")
 
 
-logging.basicConfig(level=logging.DEBUG)
-options = parse_args()
-setup(options.corpus)
+# Setup for from an inputted corpus, instead of reading from a file
+def setup_from_db(records_file, dataset):
+    global config
+    global vocab
 
-(vectorizer, counter_matrix, records) = load_all(
-    os.path.join(options.working_dir, config.TFIDF_FILE),
-    os.path.join(options.working_dir, config.FEATURES_FILE),
-)
+    config = Config()
+    logging.basicConfig(level=logging.DEBUG)
+    random.seed(config.SEED)
+    os.makedirs(options.working_dir, exist_ok=True)
 
-if options.index_query is not None:
-    test_record_at_index(options.index_query)
-elif len(options.file_query) > 0 or len(options.keywords) > 0:
-    featurize_and_test_record(options.file_query, options.keywords)
-elif options.testall:
-    test_all()
+    if records_file is None:
+        vocab = Vocab.load()
+    else:
+        vocab = Vocab.load(True)
+
+
+        # TODO potentially remove the output file here
+        wpath = os.path.join(options.working_dir, config.FEATURES_FILE)
+        with open(wpath, "w") as outp:
+            i = 0
+            
+            # each line represents a pe, broken up into the relevant functions
+            for line in dataset:
+                for func in line:
+                    obj = func
+                    
+                    obj["features"] = collect_features_as_list(obj["ast"], True, False)[0]
+                    obj["index"] = i
+                    i += 1
+                    outp.write(json.dumps(obj))
+                    outp.write("\n")
+        
+        vocab.dump()
+        logging.info("Done featurizing.")
+        counter_vectorize_from_db(
+            dataset,
+            os.path.join(options.working_dir, config.TFIDF_FILE),
+        )
+        logging.info("Done computing counter matrix.")
+
+# called by web_client
+# it may be worth storing the tfidf.pkl and vocab.pkl files in the database
+# TODO consider this later
+def compareSimilar(dataset, searchVal, working_dir):
+    global options, config
+
+    logging.basicConfig(level=logging.DEBUG)
+    options = Options(working_dir)
+
+
+    # setup the config and create the features file
+    setup_from_db(options.corpus, dataset)
+
+    print(config)
+    (vectorizer, counter_matrix, records) = load_all(
+    os.path.join(working_dir, config.TFIDF_FILE),
+    os.path.join(working_dir, config.FEATURES_FILE),
+    )
+
+    # stored in options to save passing around multiple vars
+    options.vectorizer = vectorizer
+    options.counter_matrix = counter_matrix
+    options.records = records
+
+    
+
+
+    featurize_and_test_record_from_db(searchVal, [])
+    
+# TODO flesh out further as required
+class Options:
+    corpus = True
+    working_dir = ""
+    vectorizer = None
+    counter_matrix = None
+    records = None
+
+    def __init__(self, working_dir) -> None:
+        self.working_dir = working_dir
+
+
+
+# logging.basicConfig(level=logging.DEBUG)
+# options = parse_args()
+# setup(options.corpus)
+
+# (vectorizer, counter_matrix, records) = load_all(
+#     os.path.join(options.working_dir, config.TFIDF_FILE),
+#     os.path.join(options.working_dir, config.FEATURES_FILE),
+# )
+
+# if options.index_query is not None:
+#     test_record_at_index(options.index_query)
+# elif len(options.file_query) > 0 or len(options.keywords) > 0:
+#     featurize_and_test_record(options.file_query, options.keywords)
+# elif options.testall:
+#     test_all()

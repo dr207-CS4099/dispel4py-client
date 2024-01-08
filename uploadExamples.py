@@ -4,7 +4,6 @@ from client import d4pClient
 import inspect 
 from dispel4py.utils import *
 
-
 import sys, inspect
 
 from sample import *

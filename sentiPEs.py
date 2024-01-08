@@ -33,7 +33,7 @@ print("\n Code to Text Search \n")
 
 # #RandomwordProducer
 # client.search_Registry("PE to produce a random word", "pe", "text")
-client2.search_Registry("agios", "pe", "text")
+# client2.search_Registry("agios", "pe", "text")
 # client2.search_Registry("""
 
 #     def process(self, inputs=None):
@@ -48,10 +48,18 @@ client2.search_Registry("agios", "pe", "text")
 # client2.search_Registry("check for prime input", "pe", "text")
 
 # #WordCounter
-# client2.search_Registry(" self.mywords[word] += 1", "pe", "code")
+# client2.search_Registry('''class c:
+#                             self.mywords[word] += 1''', "pe", "code")
 
 
-
+client2.search_Registry('''
+    # This PE calculates the average sentiment score based on the word sentiment file provided.
+    class c:
+        def test():
+            for line in afinnfile:
+            term, score = line.split(
+                "\t"
+            )''', "pe", "code")
 # Why is the user id set to max pe_id += 1
 # Surely it should be PE independent and actually check the description updates
 # likewise, if the code is updated it should update itself aswell

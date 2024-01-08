@@ -14,6 +14,10 @@ import subprocess
 from enum import Enum
 import os 
 
+
+import ConvertPy
+from similar import compareSimilar
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(format='%(message)s', level=logging.INFO) 
 
@@ -162,6 +166,11 @@ class PERegistrationData:
         self.code_embedding = np.array_str(encode(pe_process_source_code,2).numpy())
         self.desc_embedding = np.array_str(encode(self.description,1).numpy())
         
+
+        # convert to json style file for AST similarity
+        convertToAST = ConvertPy.ConvertPyToAST(pe_source_code, False)
+        self.astEmbedding = str(json.dumps(convertToAST.result))
+
     def to_dict(self):
         return {
             "peName": self.pe_name,
@@ -170,7 +179,8 @@ class PERegistrationData:
             "description": self.description,
             "peImports": self.pe_imports,
             "codeEmbedding": self.code_embedding,
-            "descEmbedding": self.desc_embedding
+            "descEmbedding": self.desc_embedding,
+            "astEmbedding" : self.astEmbedding
         }
 
     def __str__(self):
@@ -315,9 +325,13 @@ class WebClient:
     def register_PE(self, pe_payload: PERegistrationData):
 
         verify_login()
-
+        # TODO to deal with excessively large classes, it may become worthwhile to send
+        # each function indivually
         data = json.dumps(pe_payload.to_dict())
+        print(data)
+        print(URL_REGISTER_PE.format(globals.CLIENT_AUTH_ID))
         response = req.post(URL_REGISTER_PE.format(globals.CLIENT_AUTH_ID), data=data,headers=headers)
+        print(response)
         response = json.loads(response.text)
 
         if 'ApiError' in response.keys():
@@ -524,7 +538,7 @@ class WebClient:
         return get_objects(response)
 
     def search_similarity(self, search_payload: SearchData, query_type):
-
+        print("search_similarity")
         search_dict = search_payload.to_dict()
 
         url = URL_PE_ALL.format(globals.CLIENT_AUTH_ID)
@@ -532,6 +546,28 @@ class WebClient:
         response = req.get(url=url)
         response = json.loads(response.text)
         
+        # print(response[0]['astEmbedding'])
+
+        astEmbeddings = []
+
+        # puts all of the pe embeddings into a list
+        # TODO handle bad responses
+        for pe in response:
+            # print(pe['astEmbedding'][1])
+            astEmbeddings.append(json.loads(pe['astEmbedding']))
+        
+        # ast similarity
+            
+        print(search_payload.search)
+
+        # convert to json style file for AST similarity
+        # TODO currently will only work for classes
+        convertToAST = ConvertPy.ConvertPyToAST(search_payload.search, False)
+
+        print(convertToAST.result)
+        print("hello world")
+        compareSimilar(astEmbeddings, convertToAST.result, "C:/Users/danie/Desktop/Laminar/dispel4py-client")    
+    
         return similarity_search(search_dict['search'], response, query_type)
 
     def get_Registry(self):

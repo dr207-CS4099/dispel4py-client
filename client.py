@@ -6,7 +6,6 @@ from dispel4py.visualisation import display
 from typing_extensions import Literal, get_args
 from web_client import WebClient
 from typing import Union
-
 _TYPES = Literal["pe", "workflow", "both"]
 
 _QUERY_TYPES = Literal["text","code"]
