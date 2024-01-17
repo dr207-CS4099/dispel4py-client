@@ -100,7 +100,7 @@ class ConvertToPE:
         text = ""
         HIDDEN = 1
         if(lastIndexOfToken < 0):
-            # print("hello world")
+            print("last index of token < 0")
             return ""
         if(isBefore):
             ws = tokens.getHiddenTokensToLeft(lastIndexOfToken, HIDDEN)
@@ -233,11 +233,12 @@ class ConvertToPE:
         pe += "    def _process("+ paramText + "):\n"
 
         # split by line so that we can add tabs to each as necessary
-        processLines = self.createWithHidden(funcTree, "", tokens).strip().split("\n")
+        # remove leading new lines (but not whitespace) from text before splitting
+        processLines = self.createWithHidden(funcTree, "", tokens).strip("\n"). split("\n")
         print(processLines)
         # reconcatenate the list (add tabs to each element in the list then join with \n)
-        # using 8 spaces instead of \t\t
-        processLines = '\n'.join([''.join(("        ", line)) for line in processLines])
+        # using 4 spaces instead of \t (reqiured as we are going from function to class level indentation)
+        processLines = '\n'.join([''.join(("    ", line)) for line in processLines])
         pe += processLines
 
         return pe
@@ -279,28 +280,24 @@ class ConvertToPE:
         return text
 
 
-# testStr ='''def testFunc():
-#     if(True and 2==2):
-#         print("example")
-#         print("test")
-#         return test'''  
+# testStr ='''def testFunc():\n    print("test")\n    if(True and 2==2):\n        print("example")\n        print("test")\n    return test'''  
 
 # print(ConvertToPE(testStr, False).pe)
 
 # read from json
 file = open("C:/Users/danie/Desktop/Laminar/dispel4py-client/testPEs.py", "a")
-with open("C:/Users/danie/Desktop/Laminar/dispel4py-client/python_train_1.jsonl") as data_file:
+with open("C:/Users/danie/Desktop/Laminar/python_train_1.jsonl") as data_file:
     for line in data_file:
         data = json.loads(line)
         print(data['code'])
         converted = ConvertToPE(data['code'], False)
         if converted.pe != None:
             print(converted.pe)
-            # file.write(converted.pe + "\n")
-            break
+            file.write(converted.pe + "\n")
+            
 
 
-
+# TODO consider using variable for tab sizes etc
 
 
 

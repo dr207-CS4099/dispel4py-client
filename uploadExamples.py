@@ -11,7 +11,7 @@ from sample import *
 from test_PEs.examples.graph_testing.testing_PEs import *
 # doesn't work due to the length of the encoding 
 from test_PEs.examples.article_sentiment_analysis.analysis_sentiment_partition import *
-
+from testPEs import *
 # from test_PEs.examples.seismo.preprocess_example import * 
 # from dispel4py.examples.seismo.simple_PEs import * 
 # from dispel4py.examples.seismo.test_chain import * 
@@ -23,7 +23,8 @@ from test_PEs.examples.article_sentiment_analysis.analysis_sentiment_partition i
 # ignore the PE classes as we do not want to run anything on them
 pe_ignores = ['ConsumerPE', 'IterativePE', 'GenericPE', 'ProducerPE',
               'AFINNSentimeScore', 'SentiWordNetScore', 'SentiSynset']
-modules = ['sample', 'test_PEs.examples.graph_testing.testing_PEs', 'test_PEs.examples.article_sentiment_analysis.analysis_sentiment_partition'] #, 'test_PEs.examples.seismo.preprocess_example']
+modules = ['sample', 'test_PEs.examples.graph_testing.testing_PEs', 'test_PEs.examples.article_sentiment_analysis.analysis_sentiment_partition',
+           'testPEs'] #, 'test_PEs.examples.seismo.preprocess_example']
 # print(sys.modules)
 classes = []
 for module in modules:
@@ -36,7 +37,6 @@ print("\n Create User and Login \n")
 client2.register("noDesc","noDesc")
 client2.login("noDesc","noDesc")
 
-
 client2.register_PE(SentiWordNetScore("SentiWordNet_3.0.0_20130122.txt"))
 client2.register_PE(AFINNSentimeScore("AFINN-111.txt"))
 # client.register_PE(SentiSynset(), 'SentiSynset')
@@ -45,7 +45,10 @@ client2.register_PE(AFINNSentimeScore("AFINN-111.txt"))
 for module_classes in classes:
     for cls_name, cls_obj in module_classes:
         print(cls_name)
-        client2.register_PE(cls_obj())
+        try:
+            client2.register_PE(cls_obj())
+        except:
+            print("Warning, failed to upload: likely due to unrecognised characters")
         
         
         

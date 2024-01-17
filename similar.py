@@ -370,17 +370,11 @@ def counter_vectorize(rpath, wpath):
 # counter vectorisation, from dataset instead of file
 # TODO potentially remove write to file
 def counter_vectorize_from_db(dataset, wpath):
-    # TODO using just the first value in each PE as using class based definitions
-    # may need to change later
-    #TODO REMOVE JSON LOADS FROM HERE
-    # documents = [feature_list_to_doc(json.loads(x)) for x in dataset]
-    # TODO
     documents = []
     for func in dataset:
         # This concatenates the list (instead of appending which would create a nested list)
         documents += [feature_list_to_doc(x) for x in func]
     vectorizer = CountVectorizer(min_df=1, binary=True)
-    print(documents)
     counter_matrix = vectorizer.fit_transform(documents)
     with open(wpath, "wb") as outf:
         pickle.dump((vectorizer, counter_matrix), outf)
@@ -1005,9 +999,7 @@ def test_record_at_index(idx):
 def featurize_and_test_record(record_files, keywords):
     set_tmp = None
     record_final = None
-    print(record_files)
     for record_file in record_files:
-        print(record_file)
         record = read_and_featurize_record_file(record_file)
         if record is not None:
             record_final = record
@@ -1034,6 +1026,7 @@ def featurize_and_test_record_from_db(record_jsons, keywords):
     record_final = None
     for record in record_jsons:
         # featurise the input code json
+        print(record)
         record["features"] = collect_features_as_list(record["ast"], False, False)[0]
         record["index"] = -1
         if record is not None:
@@ -1071,6 +1064,17 @@ def load_all(counter_path, asts_path):
     return (vectorizer, counter_matrix, records)
 
 
+# loads all, with the ast already provided
+def load_all_from_db(counter_path):
+    with open(counter_path, "rb") as outf:
+        (vectorizer, counter_matrix) = pickle.load(outf)
+    
+    logging.info("Read all records.")
+    return (vectorizer, counter_matrix)
+
+
+
+
 def setup(records_file):
     global config
     global vocab
@@ -1096,7 +1100,7 @@ def setup(records_file):
         logging.info("Done computing counter matrix.")
 
 
-# Setup for from an inputted corpus, instead of reading from a file
+
 def setup_from_db(records_file, dataset):
     global config
     global vocab
@@ -1106,38 +1110,81 @@ def setup_from_db(records_file, dataset):
     random.seed(config.SEED)
     os.makedirs(options.working_dir, exist_ok=True)
 
+    # TODO do  we ever want to just load the vocab?
     if records_file is None:
         vocab = Vocab.load()
     else:
         vocab = Vocab.load(True)
 
-
-        # TODO potentially remove the output file here
-        wpath = os.path.join(options.working_dir, config.FEATURES_FILE)
-        with open(wpath, "w") as outp:
-            i = 0
-            
-            # each line represents a pe, broken up into the relevant functions
-            for line in dataset:
-                for func in line:
-                    obj = func
-                    obj["features"] = collect_features_as_list(obj["ast"], True, False)[0]
-                    obj["index"] = i
-                    i += 1
-                    outp.write(json.dumps(obj))
-                    outp.write("\n")
+        featurisedDataSet = []
+        i = 0
         
+        # each line represents a pe, broken up into the relevant functions
+
+        # we want to store the features in the database so that we do not have to create this every time
+        for line in dataset:
+            for func in line:
+                obj = func
+                obj["features"] = collect_features_as_list(obj["ast"], True, False)[0]
+                obj["index"] = i
+                i += 1
+                featurisedDataSet.append(obj)
+    
         vocab.dump()
         logging.info("Done featurizing.")
+        #TODO what to do with these files?
         counter_vectorize_from_db(
             dataset,
             os.path.join(options.working_dir, config.TFIDF_FILE),
         )
         logging.info("Done computing counter matrix.")
 
+        return featurisedDataSet
+
 # called by web_client
 # it may be worth storing the tfidf.pkl and vocab.pkl files in the database
 # TODO consider this later
+def compare_similar(featurisedDataSet, searchVal, working_dir):
+    global options, config, vocab
+
+    logging.basicConfig(level=logging.DEBUG)
+    options = Options(working_dir)
+    config = Config()
+
+    (vectorizer, counter_matrix) = load_all_from_db(
+    os.path.join(working_dir, config.TFIDF_FILE),
+    )
+
+    # stored in options to save passing around multiple vars
+    options.vectorizer = vectorizer
+    options.counter_matrix = counter_matrix
+    options.records = featurisedDataSet
+
+    vocab = Vocab.load()
+
+    featurize_and_test_record_from_db(searchVal, [])
+
+
+# adds the features to the json files pertaining to each function
+# these can then be stored in the database to be loaded later
+    
+# Setup for from an inputted corpus, instead of reading from a file
+# most likely used one PE at a time, but option for multiple
+    
+def setup_features(dataset, working_dir):
+    global options, config
+
+    logging.basicConfig(level=logging.DEBUG)
+    options = Options(working_dir)
+
+
+    # setup the config and create the features file
+    return setup_from_db(options.corpus, dataset)
+
+
+
+
+
 def compareSimilar(dataset, searchVal, working_dir):
     global options, config
 
@@ -1159,14 +1206,17 @@ def compareSimilar(dataset, searchVal, working_dir):
     options.counter_matrix = counter_matrix
     options.records = records
 
-    
-
 
     featurize_and_test_record_from_db(searchVal, [])
-    
+
+
+
+
+
+
 # TODO flesh out further as required
 class Options:
-    corpus = True
+    corpus = True # TODO test difference when none
     working_dir = ""
     vectorizer = None
     counter_matrix = None

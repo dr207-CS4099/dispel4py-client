@@ -16,7 +16,7 @@ import os
 
 
 import ConvertPy
-from similar import compareSimilar
+from similar import setup_features, compare_similar, compareSimilar
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format='%(message)s', level=logging.INFO) 
@@ -31,6 +31,7 @@ def verify_login():
 def create_import_string(pe_source_code: str):
      #write source code to file
     text_file = open("imports.py", "w")
+    # TODO create reject warning from this, and allow program to keep running
     text_file.write(pe_source_code)
     text_file.close()
 
@@ -169,9 +170,11 @@ class PERegistrationData:
 
         # convert to json style file for AST similarity
         convertToAST = ConvertPy.ConvertPyToAST(pe_source_code, False)
-        self.astEmbedding = str(json.dumps(convertToAST.result))
-        print(len(convertToAST.result))
 
+        # featurisation allows for storing the relevant features for the similarity analysis
+        # TODO need a better way to store this directory
+        featurisedAST = setup_features([convertToAST.result], "C:/Users/danie/Desktop/Laminar/dispel4py-client")
+        self.astEmbedding = str(json.dumps(featurisedAST))
 
     def to_dict(self):
         return {
@@ -188,46 +191,6 @@ class PERegistrationData:
     def __str__(self):
         return "PERegistrationData(" + json.dumps(self.to_dict(), indent=4) + ")"
 
-
-# # takes PEs as strings, this way we do not need the additional context
-# # required for them to run (ie globabl variables etc)
-# # as these do not need to be able to run we do not need to worry about these
-# # the above class enforces that all relevant context is present
-# class RegisterTestPE:
-     
-#     def __init__(
-#         self,
-#         *,
-#         pe: type, 
-#         pe_name: str = None,
-#         pe_code: any = None,
-#         description: str = None
-#     ):
-
-#         if pe is not None: 
-#             pe_name = pe.__class__.__name__
-            
-#         pe_source_code = inspect.getsource(pe.__class__)
-#         pe_process_source_code = inspect.getsource(pe._process)
-
-#         self.pe_name = pe_name 
-#         self.pe_code = get_payload(pe)
-
-#         if description:
-#             self.description = description
-#         else:
-#             self.description = generate_summary(pe_process_source_code)
-
-#         self.pe_source_code = pe_source_code
-#         self.pe_imports = create_import_string(pe_source_code)
-#         self.code_embedding = np.array_str(encode(pe_process_source_code,2).numpy())
-#         self.desc_embedding = np.array_str(encode(self.description,1).numpy())
-        
-
-#         # convert to json style file for AST similarity
-#         convertToAST = ConvertPy.ConvertPyToAST(pe_source_code, False)
-#         self.astEmbedding = str(json.dumps(convertToAST.result))
-#         print(len(self.astEmbedding))
 
     def to_dict(self):
         return {
@@ -612,6 +575,7 @@ class WebClient:
         # TODO handle bad responses
         for pe in response:
             # print(pe['astEmbedding'][1])
+            # concat instead of appending
             astEmbeddings.append(json.loads(pe['astEmbedding']))
         # ast similarity
         print(len(astEmbeddings[1]))
@@ -621,8 +585,7 @@ class WebClient:
         # TODO currently will only work for classes
         convertToAST = ConvertPy.ConvertPyToAST(search_payload.search, False)
 
-        print(convertToAST.result)
-        print("hello world")
+        
         compareSimilar(astEmbeddings, convertToAST.result, "C:/Users/danie/Desktop/Laminar/dispel4py-client")    
     
         return similarity_search(search_dict['search'], response, query_type)

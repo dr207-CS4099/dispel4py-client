@@ -48,8 +48,8 @@ print("\n Code to Text Search \n")
 # client2.search_Registry("check for prime input", "pe", "text")
 
 # #WordCounter
-# client2.search_Registry('''class c:
-#                             self.mywords[word] += 1''', "pe", "code")
+# client2.search_Registry(" self.mywords[word] += 1", "pe", "code")
+
 
 
 # client2.search_Registry('''
