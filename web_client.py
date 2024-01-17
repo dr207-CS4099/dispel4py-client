@@ -170,6 +170,8 @@ class PERegistrationData:
         # convert to json style file for AST similarity
         convertToAST = ConvertPy.ConvertPyToAST(pe_source_code, False)
         self.astEmbedding = str(json.dumps(convertToAST.result))
+        print(len(convertToAST.result))
+
 
     def to_dict(self):
         return {
@@ -185,6 +187,64 @@ class PERegistrationData:
 
     def __str__(self):
         return "PERegistrationData(" + json.dumps(self.to_dict(), indent=4) + ")"
+
+
+# # takes PEs as strings, this way we do not need the additional context
+# # required for them to run (ie globabl variables etc)
+# # as these do not need to be able to run we do not need to worry about these
+# # the above class enforces that all relevant context is present
+# class RegisterTestPE:
+     
+#     def __init__(
+#         self,
+#         *,
+#         pe: type, 
+#         pe_name: str = None,
+#         pe_code: any = None,
+#         description: str = None
+#     ):
+
+#         if pe is not None: 
+#             pe_name = pe.__class__.__name__
+            
+#         pe_source_code = inspect.getsource(pe.__class__)
+#         pe_process_source_code = inspect.getsource(pe._process)
+
+#         self.pe_name = pe_name 
+#         self.pe_code = get_payload(pe)
+
+#         if description:
+#             self.description = description
+#         else:
+#             self.description = generate_summary(pe_process_source_code)
+
+#         self.pe_source_code = pe_source_code
+#         self.pe_imports = create_import_string(pe_source_code)
+#         self.code_embedding = np.array_str(encode(pe_process_source_code,2).numpy())
+#         self.desc_embedding = np.array_str(encode(self.description,1).numpy())
+        
+
+#         # convert to json style file for AST similarity
+#         convertToAST = ConvertPy.ConvertPyToAST(pe_source_code, False)
+#         self.astEmbedding = str(json.dumps(convertToAST.result))
+#         print(len(self.astEmbedding))
+
+    def to_dict(self):
+        return {
+            "peName": self.pe_name,
+            "peCode": self.pe_code,
+            "sourceCode": self.pe_source_code, 
+            "description": self.description,
+            "peImports": self.pe_imports,
+            "codeEmbedding": self.code_embedding,
+            "descEmbedding": self.desc_embedding,
+            "astEmbedding" : self.astEmbedding
+        }
+
+    def __str__(self):
+        return "PERegistrationData(" + json.dumps(self.to_dict(), indent=4) + ")"
+
+
 
 class WorkflowRegistrationData:
 
@@ -328,8 +388,6 @@ class WebClient:
         # TODO to deal with excessively large classes, it may become worthwhile to send
         # each function indivually
         data = json.dumps(pe_payload.to_dict())
-        print(data)
-        print(URL_REGISTER_PE.format(globals.CLIENT_AUTH_ID))
         response = req.post(URL_REGISTER_PE.format(globals.CLIENT_AUTH_ID), data=data,headers=headers)
         print(response)
         response = json.loads(response.text)
@@ -555,9 +613,8 @@ class WebClient:
         for pe in response:
             # print(pe['astEmbedding'][1])
             astEmbeddings.append(json.loads(pe['astEmbedding']))
-        
         # ast similarity
-            
+        print(len(astEmbeddings[1]))
         print(search_payload.search)
 
         # convert to json style file for AST similarity

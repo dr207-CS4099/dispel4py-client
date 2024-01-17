@@ -52,14 +52,26 @@ print("\n Code to Text Search \n")
 #                             self.mywords[word] += 1''', "pe", "code")
 
 
-client2.search_Registry('''
-    # This PE calculates the average sentiment score based on the word sentiment file provided.
-    class c:
+# client2.search_Registry('''
+#     class c:
+#         def test():
+#             for line in afinnfile:
+#                 term, score = line.split(
+#                     "\t"
+#                 )''', "pe", "code")
+
+client2.search_Registry('''class c:
         def test():
-            for line in afinnfile:
-            term, score = line.split(
-                "\t"
-            )''', "pe", "code")
+            GenericPE.__init__(self)
+            self._add_input("input", grouping=[2, 3])
+            self._add_output("output")
+            self.mood = {}
+            self.happiest = None, -5000''', "pe", "code")
+
+client2.search_Registry('''class c:
+    def _process(self, data):
+        # print("AFINNSentimeScore %s %s %s" % (article, str(avg_score),self.method))
+        return (article, avg_score, self.method)''', "pe", "code")
 # Why is the user id set to max pe_id += 1
 # Surely it should be PE independent and actually check the description updates
 # likewise, if the code is updated it should update itself aswell

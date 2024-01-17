@@ -375,8 +375,12 @@ def counter_vectorize_from_db(dataset, wpath):
     #TODO REMOVE JSON LOADS FROM HERE
     # documents = [feature_list_to_doc(json.loads(x)) for x in dataset]
     # TODO
-    documents = [feature_list_to_doc(x[0]) for x in dataset]
+    documents = []
+    for func in dataset:
+        # This concatenates the list (instead of appending which would create a nested list)
+        documents += [feature_list_to_doc(x) for x in func]
     vectorizer = CountVectorizer(min_df=1, binary=True)
+    print(documents)
     counter_matrix = vectorizer.fit_transform(documents)
     with open(wpath, "wb") as outf:
         pickle.dump((vectorizer, counter_matrix), outf)
@@ -1117,7 +1121,6 @@ def setup_from_db(records_file, dataset):
             for line in dataset:
                 for func in line:
                     obj = func
-                    
                     obj["features"] = collect_features_as_list(obj["ast"], True, False)[0]
                     obj["index"] = i
                     i += 1

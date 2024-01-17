@@ -1,7 +1,11 @@
-from ConvertPy import *
+from ConvertToPE import *
 
-convertPy('''class d:
-                def testFunc():
-                    if(True and 2==2):
-                        print("example")
-                        print("test")''')
+
+
+testStr = \
+'''def testFunc():
+        if(True and 2==2):
+            print("example")
+            print("test")'''  
+
+ConvertToPE(testStr, True)

@@ -55,23 +55,24 @@ localVarContexts = ["atom"]
 
 # todo CONVERT ALL OF THIS TO A CLASS 
 class ConvertPyToAST:
-    stackDepth = 0
-    MAX_DEPTH = 1000
-    childHasLeaf = False # TODO?
-    ruleNames = []
-    beginLine = 0
-    endLine = 0
-    totalMethods = 0
-    thisFileName = ""
-    thisClassName = ""
-    thisMethodName = ""
-    outputFile = ""
-    result = []
+    
 
     # input: either a file path, or a raw string of the desired code to be converted
     # isFile, states if the input should be treated as a file or raw string
     def __init__(self, input, isFile):
-        
+        self.stackDepth = 0
+        self.MAX_DEPTH = 1000
+        self.childHasLeaf = False # TODO?
+        self.ruleNames = []
+        self.beginLine = 0
+        self.endLine = 0
+        self.totalMethods = 0
+        self.thisFileName = ""
+        self.thisClassName = ""
+        self.thisMethodName = ""
+        self.outputFile = ""
+        self.result = []
+
         if isFile:
             input_stream = FileStream(input)
         else:
