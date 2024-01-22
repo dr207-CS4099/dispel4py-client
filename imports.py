@@ -1,14 +1,13 @@
-class ReadRaDec(GenericPE):
-
+class Deploy(ProducerPE):
     def __init__(self):
-        GenericPE.__init__(self)
-        self._add_output('output')
-    def _process(self, inputs):
-        file = inputs['input']
-        print('Reading file %s' % file)
-        with open(file) as f:
-            count = 0
-            for line in f:
-                count+= 1
-                ra, dec = line.strip().split(',')
-                self.write('output', [count, ra, dec, 0.001])
+        ProducerPE.__init__(self)
+    def _process(self):
+            '''
+            Deploy salt-thin
+            '''
+            self.shell.send(
+                self.thin,
+                os.path.join(self.thin_dir, 'salt-thin.tgz'),
+            )
+            self.deploy_ext()
+            return True

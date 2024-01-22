@@ -173,7 +173,7 @@ class PERegistrationData:
 
         # featurisation allows for storing the relevant features for the similarity analysis
         # TODO need a better way to store this directory
-        featurisedAST = setup_features([convertToAST.result], "C:/Users/danie/Desktop/Laminar/dispel4py-client")
+        featurisedAST = setup_features([convertToAST.result], ".")
         self.astEmbedding = str(json.dumps(featurisedAST))
 
     def to_dict(self):
@@ -574,14 +574,17 @@ class WebClient:
         for pe in response:
             # print(pe['astEmbedding'][1])
             # concat instead of appending
+            jsonData = None
             jsonData = json.loads(pe['astEmbedding'])
             
             # adds the pe name to each function
             for func in jsonData:
                 func['peName'] = pe['peName']
-                
+            
+
             astEmbeddings += jsonData
-        
+            if pe['peName'] == "SentiWordNetScore":
+                print("hello world")
             
         # ast similarity
         print(len(astEmbeddings[1]))
@@ -592,7 +595,7 @@ class WebClient:
         convertToAST = ConvertPy.ConvertPyToAST(search_payload.search, False)
 
         
-        compare_similar(astEmbeddings, convertToAST.result, "C:/Users/danie/Desktop/Laminar/dispel4py-client")    
+        compare_similar(astEmbeddings, convertToAST.result, ".")    
     
         return similarity_search(search_dict['search'], response, query_type)
 

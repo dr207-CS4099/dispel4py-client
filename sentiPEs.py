@@ -20,16 +20,6 @@ client.login("root","root")
 client2 = d4pClient()
 client2.register("noDesc","noDesc")
 client2.login("noDesc","noDesc")
-# print("\n Text to Code Search \n")
-# client.search_Registry("prime","pe","text")
-
-print("\n Code to Text Search \n")
-# client.search_Registry("random.randint(1, 1000)","pe","code")
-# client.search_Registry("","pe","code")
-
-# client.search_Registry("prime","pe","text")
-# client.search_Registry("PE to perform sentiment analysis on a text","pe","text")
-# # client2.search_Registry("PE to perform sentiment analysis on a text","pe","text")
 
 # #RandomwordProducer
 # client.search_Registry("PE to produce a random word", "pe", "text")
@@ -68,15 +58,15 @@ client2.search_Registry('''class c:
             self.mood = {}
             self.happiest = None, -5000''', "pe", "code")
 
-# client2.search_Registry('''class c:
-#     def _process(self, data):
-#          # check that we have recognised any words, then find a median of the score
-#         if count == 0:
-#                 avg = sent
-#         else:
-#             avg = sent / count
+client2.search_Registry('''class c:
+    def _process(self, data):
+         # check that we have recognised any words, then find a median of the score
+        if count == 0:
+                avg = sent
+        else:
+            avg = sent / count
                         
-#         return (article, avg_score, self.method)''', "pe", "code")
+        return (article, avg_score, self.method)''', "pe", "code")
 # class BASE64_b64decode
 client2.search_Registry('''class c:
 def test():
