@@ -101,6 +101,8 @@ class Config:
         self.IGNORE_VAR_SIBLING_FEATURES = False
         self.CLUSTER = True
         self.PRINT_SIMILAR = True
+        self.PRINT_SUGGESTED = False
+        self.PRINT_PRUNED = False
         self.USE_DBSCAN = True
         self.THRESHOLD1 = 0.9
         self.THRESHOLD2 = 1.5
@@ -933,27 +935,30 @@ def print_similar_and_completions(query_record, records, vectorizer, counter_mat
         print("---------------- extracted from ---------------")
         print(ast_to_code(records[query_record["index"]]["ast"]))
 
-    for clustered_record in clustered_records:
-        print(
-            f"------------------- suggested code completion ------------------"
-        )  # idxs = ({clustered_record[1:]}), score = {candidate_records[clustered_record[1]][3]}")
-        print(
-            ast_to_code_with_full_lines(
-                clustered_record[0]["ast"], clustered_record[1]["ast"]
+    # only print is selected in config
+    if config.PRINT_SUGGESTED:
+        for clustered_record in clustered_records:
+            print(
+                f"------------------- suggested code completion ------------------"
+            )  # idxs = ({clustered_record[1:]}), score = {candidate_records[clustered_record[1]][3]}")
+            print(
+                ast_to_code_with_full_lines(
+                    clustered_record[0]["ast"], clustered_record[1]["ast"]
+                )
             )
-        )
 
     if config.PRINT_SIMILAR:
         j = 0
         for (candidate_record, score, pruned_record, pruned_score) in candidate_records:
             print(
-                f"idx = {j}:------------------- similar code ------------------ index = {candidate_record['index']}, score = {score}"
+                f"idx = {j}:------------------- similar code ------------------ PE = {candidate_record['peName']} index = {candidate_record['index']}, score = {score}"
             )
             print(ast_to_code(candidate_record["ast"]))
-            print(
-                f"------------------- similar code (pruned) ------------------ score = {pruned_score}"
-            )
-            print(ast_to_code(pruned_record["ast"]))
+            if config.PRINT_PRUNED:
+                print(
+                    f"------------------- similar code (pruned) ------------------ score = {pruned_score}"
+                )
+                print(ast_to_code(pruned_record["ast"]))
             j += 1
     print("", flush=True)
 
@@ -1026,7 +1031,6 @@ def featurize_and_test_record_from_db(record_jsons, keywords):
     record_final = None
     for record in record_jsons:
         # featurise the input code json
-        print(record)
         record["features"] = collect_features_as_list(record["ast"], False, False)[0]
         record["index"] = -1
         if record is not None:
@@ -1119,9 +1123,22 @@ def setup_from_db(records_file, dataset):
         featurisedDataSet = []
         i = 0
         
-        # each line represents a pe, broken up into the relevant functions
 
-        # we want to store the features in the database so that we do not have to create this every time
+        # used when using the features.json file (and compareSimilar TODO delete soon)
+        # each line represents a pe, broken up into the relevant functions
+        # wpath = os.path.join(options.working_dir, config.FEATURES_FILE)
+        # with open(wpath, "w") as outp:
+        #     for line in dataset:
+        #         for func in line:
+        #             obj = func
+        #             obj["features"] = collect_features_as_list(obj["ast"], True, False)[0]
+        #             obj["index"] = i
+        #             i += 1
+        #             # featurisedDataSet.append(obj)
+        #             outp.write(json.dumps(obj))
+        #             outp.write("\n")
+    
+
         for line in dataset:
             for func in line:
                 obj = func
@@ -1129,7 +1146,9 @@ def setup_from_db(records_file, dataset):
                 obj["index"] = i
                 i += 1
                 featurisedDataSet.append(obj)
-    
+
+
+
         vocab.dump()
         logging.info("Done featurizing.")
         #TODO what to do with these files?

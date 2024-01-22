@@ -68,10 +68,38 @@ client2.search_Registry('''class c:
             self.mood = {}
             self.happiest = None, -5000''', "pe", "code")
 
+# client2.search_Registry('''class c:
+#     def _process(self, data):
+#          # check that we have recognised any words, then find a median of the score
+#         if count == 0:
+#                 avg = sent
+#         else:
+#             avg = sent / count
+                        
+#         return (article, avg_score, self.method)''', "pe", "code")
+# class BASE64_b64decode
 client2.search_Registry('''class c:
-    def _process(self, data):
-        # print("AFINNSentimeScore %s %s %s" % (article, str(avg_score),self.method))
-        return (article, avg_score, self.method)''', "pe", "code")
+def test():
+    try:
+        decoder()
+    except UnicodeDecodeError:
+        return decoded''', "pe", "code")
+#API config
+client2.search_Registry('''class c:
+    def test():
+        opts.update({
+            'log_file': opts.get('api_log', DEFAULT_API_OPTS['api_log']),
+            'pid': opts.get('api_pid', DEFAULT_API_OPTS['api_pid']),
+            
+        })
+
+        prepend_root_dir(opts, [
+            'api_pid',
+            'api_log',
+            'log',
+            'pid'
+        ])
+        return opts''', "pe", "code")
 # Why is the user id set to max pe_id += 1
 # Surely it should be PE independent and actually check the description updates
 # likewise, if the code is updated it should update itself aswell

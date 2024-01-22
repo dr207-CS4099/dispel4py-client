@@ -559,7 +559,6 @@ class WebClient:
         return get_objects(response)
 
     def search_similarity(self, search_payload: SearchData, query_type):
-        print("search_similarity")
         search_dict = search_payload.to_dict()
 
         url = URL_PE_ALL.format(globals.CLIENT_AUTH_ID)
@@ -568,7 +567,6 @@ class WebClient:
         response = json.loads(response.text)
         
         # print(response[0]['astEmbedding'])
-
         astEmbeddings = []
 
         # puts all of the pe embeddings into a list
@@ -576,7 +574,15 @@ class WebClient:
         for pe in response:
             # print(pe['astEmbedding'][1])
             # concat instead of appending
-            astEmbeddings.append(json.loads(pe['astEmbedding']))
+            jsonData = json.loads(pe['astEmbedding'])
+            
+            # adds the pe name to each function
+            for func in jsonData:
+                func['peName'] = pe['peName']
+                
+            astEmbeddings += jsonData
+        
+            
         # ast similarity
         print(len(astEmbeddings[1]))
         print(search_payload.search)
@@ -586,7 +592,7 @@ class WebClient:
         convertToAST = ConvertPy.ConvertPyToAST(search_payload.search, False)
 
         
-        compareSimilar(astEmbeddings, convertToAST.result, "C:/Users/danie/Desktop/Laminar/dispel4py-client")    
+        compare_similar(astEmbeddings, convertToAST.result, "C:/Users/danie/Desktop/Laminar/dispel4py-client")    
     
         return similarity_search(search_dict['search'], response, query_type)
 

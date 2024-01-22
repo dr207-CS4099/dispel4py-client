@@ -241,7 +241,7 @@ class d4pClient:
             search_type = search_type,
         )
 
-        logger.info("Searched for \"" + search + "\"")
+        # logger.info("Searched for \"" + search + "\"")
 
         #Performing search similarity for PEs
         if search_type == "pe": 
