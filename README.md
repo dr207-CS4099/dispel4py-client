@@ -55,9 +55,9 @@ In future this will include how this data can be emperically analysed.
 # Converting from function to PE
 The file ConvertToPE.py takes a function and attempts to convert it to a PE. Currently the valid types of PE are: 
 
-ProducerPE (takes no input, returns an output)
-IterativePE (takes an input, returns an output)
-ConsumerPE (takes an input, returns no output)
+ProducerPE (takes no input, returns an output)  
+IterativePE (takes an input, returns an output)  
+ConsumerPE (takes an input, returns no output)  
 
 Functions that take more than one input, or return more than one output are rejected.
 
