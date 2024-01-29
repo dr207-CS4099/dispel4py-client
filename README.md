@@ -67,7 +67,7 @@ This allows generic functions to be stored within the database and used within d
 
 
 # Getting started with code-to-code search in Laminar
-Running uploadExamples.py will upload a small sample of PEs to the database, an example of expected search inputs can be seen in sentiPEs.py. This will provide the user with a feel for the functionality of this program.
+Running uploadExamples.py will upload a small sample of PEs to the database and an example of expected search inputs can be seen in sentiPEs.py. This will provide the user with a feel for the functionality of this program.
 
 
 ```
