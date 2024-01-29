@@ -5,7 +5,7 @@ from dispel4py.core import GenericPE
 from client import d4pClient
 import inspect 
 from dispel4py.utils import *
-from data import *
+from Aroma.data import *
 
 
 # for cleaning
@@ -71,7 +71,7 @@ def writePEToPYFile(data):
     # need to be able to write the upload example to a file
     # store it's name, with pe2 in the data.json
     # so that we can get from one to the other
-    with open("data.py", "w") as file:
+    with open("./Aroma/data.py", "w") as file:
         file.write("from dispel4py.core import GenericPE\nfrom dispel4py.base import IterativePE, ConsumerPE, ProducerPE\n")
         for pe in data:
             file.write(pe + "\n")
@@ -98,14 +98,14 @@ def uploadPEData(inputFile):
 
 # function to run sentiment analysis
 # should take the 
-def runSentimentAnalysis():
+def runSentimentAnalysis(dataFile):
     client = d4pClient()
     client.register("TestCorpus","TestCorpus")
     client.login("TestCorpus","TestCorpus")
 
     # iterates through each test set in the data file
     # checks if the expected pe is found
-    with open("data.json", "r") as file:
+    with open(dataFile , "r") as file:
         file = json.load(file)
         for pePair in file:
             print("expecting: " + pePair['pe1'])
@@ -136,9 +136,9 @@ def runSentimentAnalysis():
 
 #     client.search_Registry('''def _process(self):\n            \"\"\"\n            Default filters for model\n            \"\"\"\n            return (\n                super().get_count_query()\n                .filter(models.DagModel.is_active)\n                .filter(~models.DagModel.is_subdag)\n            )"'''
 #                            , "pe", "code")
-dataFile = "data.json"
+dataFile = "./Aroma/data.json"
 # createSimilarPEData(dataFile)
 
-# uploadPEData('data')
+uploadPEData('Aroma.data')
 
-runSentimentAnalysis()
+runSentimentAnalysis(dataFile)

@@ -16,7 +16,7 @@ import os
 
 
 import ConvertPy
-from similar import setup_features, compare_similar, compareSimilar
+from Aroma.similar import setup_features, compare_similar, compareSimilar
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format='%(message)s', level=logging.INFO) 
@@ -174,7 +174,7 @@ class PERegistrationData:
 
         # featurisation allows for storing the relevant features for the similarity analysis
         # TODO need a better way to store this directory
-        featurisedAST = setup_features([convertToAST.result], ".")
+        featurisedAST = setup_features([convertToAST.result], "./Aroma")
         self.astEmbedding = str(json.dumps(featurisedAST))
 
     def to_dict(self):
@@ -597,8 +597,8 @@ class WebClient:
 
         convertToAST = ConvertPy.ConvertPyToAST(search_payload.search, False)
         # TODO there is likely a more efficient way to do this
-        setup_features([astEmbeddings], ".")
-        compare_similar(astEmbeddings, convertToAST.result, ".")    
+        setup_features([astEmbeddings], "./Aroma")
+        compare_similar(astEmbeddings, convertToAST.result, "./Aroma")    
     
         return similarity_search(search_dict['search'], response, query_type)
 

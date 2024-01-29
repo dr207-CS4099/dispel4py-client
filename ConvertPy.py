@@ -2,8 +2,8 @@ import sys
 # antlr4 -v 4.13.0 -Dlanguage=Python3 PythonParser.g4
 from antlr4 import * #antlr4-python3-runtime==4.13.1
 from antlr4.tree.Trees import Trees
-from PythonLexer import PythonLexer
-from PythonParser import PythonParser
+from Aroma.PythonLexer import PythonLexer
+from Aroma.PythonParser import PythonParser
 from antlr4.tree.Tree import TerminalNode, TerminalNodeImpl, Tree, ParseTree
 import json
 
