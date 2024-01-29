@@ -150,10 +150,11 @@ class PERegistrationData:
 
         if pe is not None: 
             pe_name = pe.__class__.__name__
-            
+        
+
+       
         pe_source_code = inspect.getsource(pe.__class__)
         pe_process_source_code = inspect.getsource(pe._process)
-
         self.pe_name = pe_name 
         self.pe_code = get_payload(pe)
 
@@ -583,8 +584,7 @@ class WebClient:
             
 
             astEmbeddings += jsonData
-            if pe['peName'] == "SentiWordNetScore":
-                print("hello world")
+            
             
         # ast similarity
         print(len(astEmbeddings[1]))
@@ -592,9 +592,12 @@ class WebClient:
 
         # convert to json style file for AST similarity
         # TODO currently will only work for classes
-        convertToAST = ConvertPy.ConvertPyToAST(search_payload.search, False)
 
         
+
+        convertToAST = ConvertPy.ConvertPyToAST(search_payload.search, False)
+        # TODO there is likely a more efficient way to do this
+        setup_features([astEmbeddings], ".")
         compare_similar(astEmbeddings, convertToAST.result, ".")    
     
         return similarity_search(search_dict['search'], response, query_type)

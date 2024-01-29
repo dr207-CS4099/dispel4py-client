@@ -35,8 +35,10 @@ class PETYPE(Enum):
 class ConvertToPE:
     ruleNames = []
     pe = None
+    className = None
     # perform parsing and lexing to ensure ease of traversal to the appropriate terms
-    def __init__(self, input, isFile):
+    def __init__(self, input, isFile, appendID = None):
+   
         if isFile:
             input_stream = FileStream(input)
         else:
@@ -48,10 +50,10 @@ class ConvertToPE:
 
         stream = CommonTokenStream(lexer)
         parser = PythonParser(stream)
-        print(stream)
+        # print(stream)
         tree = parser.file_input()
         # print(Trees.toStringTree(tree, None, parser))
-        print(input)
+        # print(input)
 
         self.setRuleNames(parser)
 
@@ -77,14 +79,14 @@ class ConvertToPE:
 
         if numReturnVals > 1:
             return
-        print(numReturnVals)
-        print(numParams)
+        # print(numReturnVals)
+        # print(numParams)
         
         peType = self.getPEType(numParams, numReturnVals)
 
-        print(peType)
+        # print(peType)
         if peType != None:
-            self.pe = self.constructPE(peType, funcName, funcTree, paramText, stream)
+            self.pe = self.constructPE(peType, funcName, funcTree, paramText, stream, appendID)
 
     def setRuleNames(self, parser):
         self.ruleNames = parser.ruleNames
@@ -221,12 +223,17 @@ class ConvertToPE:
     # create a class, and init for the appropriate type
     # name class using function name
     # put inputted function code into the _process function
-    def constructPE(self, peType: PETYPE, funcName, funcTree, paramText, tokens):
+    def constructPE(self, peType: PETYPE, funcName, funcTree, paramText, tokens, appendID):
         # adds the self param as appropriate
         if paramText.strip() == "":
             paramText = "self"
         else:
             paramText = "self, " + paramText.strip()
+
+        # adds a unique identifier if required
+        if appendID != None:
+            funcName = str(funcName) + "_" + str(appendID)
+        self.className = funcName
         # capitalise the first letter so that it is the appropriate form for a class
         pe = "class " + str(funcName).capitalize() + "(" + peType.value + "):\n"
         pe += "    def __init__(self):\n        " + peType.value + ".__init__(self)\n"
@@ -235,12 +242,11 @@ class ConvertToPE:
         # split by line so that we can add tabs to each as necessary
         # remove leading new lines (but not whitespace) from text before splitting
         processLines = self.createWithHidden(funcTree, "", tokens).strip("\n"). split("\n")
-        print(processLines)
+        # print(processLines)
         # reconcatenate the list (add tabs to each element in the list then join with \n)
         # using 4 spaces instead of \t (reqiured as we are going from function to class level indentation)
         processLines = '\n'.join([''.join(("    ", line)) for line in processLines])
         pe += processLines
-
         return pe
 
         # iterate through tree and recover the 
@@ -280,20 +286,20 @@ class ConvertToPE:
         return text
 
 
-# testStr ='''def testFunc():\n    print("test")\n    if(True and 2==2):\n        print("example")\n        print("test")\n    return test'''  
+# testStr ='''def testFunc(var):\n    print("test")\n    if(True and 2==2):\n        print("example")\n        print("test")\n    return test'''  
 
-# print(ConvertToPE(testStr, False).pe)
+# print(ConvertToPE(testStr, False, 3).pe)
 
 # read from json
-file = open("C:/Users/danie/Desktop/Laminar/dispel4py-client/testPEs.py", "a")
-with open("C:/Users/danie/Desktop/Laminar/python_train_1.jsonl") as data_file:
-    for line in data_file:
-        data = json.loads(line)
-        print(data['code'])
-        converted = ConvertToPE(data['code'], False)
-        if converted.pe != None:
-            print(converted.pe)
-            file.write(converted.pe + "\n")
+# file = open("C:/Users/danie/Desktop/Laminar/dispel4py-client/testPEs.py", "a")
+# with open("C:/Users/danie/Desktop/Laminar/python_train_1.jsonl") as data_file:
+#     for line in data_file:
+#         data = json.loads(line)
+#         print(data['code'])
+#         converted = ConvertToPE(data['code'], False)
+#         if converted.pe != None:
+#             print(converted.pe)
+#             file.write(converted.pe + "\n")
             
 
 

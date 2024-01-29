@@ -1,0 +1,482 @@
+[
+    {
+        "pe1": "get_vid_from_url_0",
+        "pe2": "def get_vid_from_url(url):\n        \"\"\"Extracts video ID from URL.\n        \"\"\"\n        vid = match1(url, 'https?://www.mgtv.com/(?:b|l)/\\d+/(\\d+).html')\n        if not vid:\n            vid = match1(url, 'https?://www.mgtv.com/hz/bdpz/\\d+/(\\d+).html')\n        return vid",
+        "desc": "Extracts video ID from URL."
+    },
+    {
+        "pe1": "get_code_144",
+        "pe2": "def get_dag_code(dag_id):\n    \"\"\"Return python code of a given dag_id.\"\"\"\n    try:\n        return get_code(dag_id)\n    except AirflowException as err:\n        _log.info(err)\n        response = jsonify(error=\"{}\".format(err))\n        response.status_code = err.status_code\n        return response",
+        "desc": "Return python code of a given dag_id."
+    },
+    {
+        "pe1": "get_conn_126",
+        "pe2": "def get_conn(self):\n        \"\"\"Returns a connection object\n        \"\"\"\n        db = self.get_connection(getattr(self, self.conn_name_attr))\n        return self.connector.connect(\n            host=db.host,\n            port=db.port,\n            username=db.login,\n            schema=db.schema)",
+        "desc": "Returns a connection object"
+    },
+    {
+        "pe1": "get_query_811",
+        "pe2": "def get_count_query(self):\n        \"\"\"\n        Default filters for model\n        \"\"\"\n        return (\n            super().get_count_query()\n            .filter(models.DagModel.is_active)\n            .filter(~models.DagModel.is_subdag)\n        )",
+        "desc": "Default filters for model"
+    },
+    {
+        "pe1": "get_config_926",
+        "pe2": "def get_config(self):\n    \"\"\"Returns the config of the layer.\n\n    A layer config is a Python dictionary (serializable) containing the\n    configuration of a layer. The same layer can be reinstantiated later\n    (without its trained weights) from this configuration.\n\n    Returns:\n      config: A Python dictionary of class keyword arguments and their\n        serialized values.\n    \"\"\"\n    config = {\n        'seed': self.seed,\n    }\n    base_config = super(_ConvFlipout, self).get_config()\n    return dict(list(base_config.items()) + list(config.items()))",
+        "desc": "Returns the config of the layer.\n\n    A layer config is a Python dictionary (serializable) containing the\n    configuration of a layer. The same layer can be reinstantiated later\n    (without its trained weights) from this configuration.\n\n    Returns:\n      config: A Python dictionary of class keyword arguments and their\n        serialized values."
+    },
+    {
+        "pe1": "get_config_926",
+        "pe2": "def get_config(self):\n    \"\"\"Returns the config of the layer.\n\n    A layer config is a Python dictionary (serializable) containing the\n    configuration of a layer. The same layer can be reinstantiated later\n    (without its trained weights) from this configuration.\n\n    Returns:\n      config: A Python dictionary of class keyword arguments and their\n        serialized values.\n    \"\"\"\n    config = {\n        'units': self.units,\n        'activation': (tf.keras.activations.serialize(self.activation)\n                       if self.activation else None),\n        'activity_regularizer':\n            tf.keras.initializers.serialize(self.activity_regularizer),\n    }\n    function_keys = [\n        'kernel_posterior_fn',\n        'kernel_posterior_tensor_fn',\n        'kernel_prior_fn',\n        'kernel_divergence_fn',\n        'bias_posterior_fn',\n        'bias_posterior_tensor_fn',\n        'bias_prior_fn',\n        'bias_divergence_fn',\n    ]\n    for function_key in function_keys:\n      function = getattr(self, function_key)\n      if function is None:\n        function_name = None\n        function_type = None\n      else:\n        function_name, function_type = tfp_layers_util.serialize_function(\n            function)\n      config[function_key] = function_name\n      config[function_key + '_type'] = function_type\n    base_config = super(_DenseVariational, self).get_config()\n    return dict(list(base_config.items()) + list(config.items()))",
+        "desc": "Returns the config of the layer.\n\n    A layer config is a Python dictionary (serializable) containing the\n    configuration of a layer. The same layer can be reinstantiated later\n    (without its trained weights) from this configuration.\n\n    Returns:\n      config: A Python dictionary of class keyword arguments and their\n        serialized values."
+    },
+    {
+        "pe1": "assemble_3585",
+        "pe2": "def assemble(self):\n        \"\"\"Assemble a QasmQobjInstruction\"\"\"\n        instruction = super().assemble()\n        if self.label:\n            instruction.label = self.label\n        return instruction",
+        "desc": "Assemble a QasmQobjInstruction"
+    },
+    {
+        "pe1": "to_matrix_3601",
+        "pe2": "def to_matrix(self):\n        \"\"\"Return a Numpy.array for the U3 gate.\"\"\"\n        isqrt2 = 1 / numpy.sqrt(2)\n        phi, lam = self.params\n        phi, lam = float(phi), float(lam)\n        return numpy.array([[isqrt2, -numpy.exp(1j * lam) * isqrt2],\n                            [\n                                numpy.exp(1j * phi) * isqrt2,\n                                numpy.exp(1j * (phi + lam)) * isqrt2\n                            ]],\n                           dtype=complex)",
+        "desc": "Return a Numpy.array for the U3 gate."
+    },
+    {
+        "pe1": "conjugate_3627",
+        "pe2": "def conjugate(self):\n        \"\"\"Return the conjugate of the QuantumChannel.\"\"\"\n        # pylint: disable=assignment-from-no-return\n        stine_l = np.conjugate(self._data[0])\n        stine_r = None\n        if self._data[1] is not None:\n            stine_r = np.conjugate(self._data[1])\n        return Stinespring((stine_l, stine_r), self.input_dims(),\n                           self.output_dims())",
+        "desc": "Return the conjugate of the QuantumChannel."
+    },
+    {
+        "pe1": "transpose_3628",
+        "pe2": "def transpose(self):\n        \"\"\"Return the transpose of the QuantumChannel.\"\"\"\n        din, dout = self.dim\n        dtr = self._data[0].shape[0] // dout\n        stine = [None, None]\n        for i, mat in enumerate(self._data):\n            if mat is not None:\n                stine[i] = np.reshape(\n                    np.transpose(np.reshape(mat, (dout, dtr, din)), (2, 1, 0)),\n                    (din * dtr, dout))\n        return Stinespring(\n            tuple(stine),\n            input_dims=self.output_dims(),\n            output_dims=self.input_dims())",
+        "desc": "Return the transpose of the QuantumChannel."
+    },
+    {
+        "pe1": "to_matrix_3601",
+        "pe2": "def to_matrix(self):\n        \"\"\"Return a Numpy.array for the U3 gate.\"\"\"\n        lam = self.params[0]\n        lam = float(lam)\n        return numpy.array([[1, 0], [0, numpy.exp(1j * lam)]], dtype=complex)",
+        "desc": "Return a Numpy.array for the U3 gate."
+    },
+    {
+        "pe1": "bit_string_index_3972",
+        "pe2": "def bit_string_index(s):\n    \"\"\"Return the index of a string of 0s and 1s.\"\"\"\n    n = len(s)\n    k = s.count(\"1\")\n    if s.count(\"0\") != n - k:\n        raise VisualizationError(\"s must be a string of 0 and 1\")\n    ones = [pos for pos, char in enumerate(s) if char == \"1\"]\n    return lex_index(n, k, ones)",
+        "desc": "Return the index of a string of 0s and 1s."
+    },
+    {
+        "pe1": "conjugate_3627",
+        "pe2": "def conjugate(self):\n        \"\"\"Return the conjugate of the QuantumChannel.\"\"\"\n        return Choi(np.conj(self._data), self.input_dims(), self.output_dims())",
+        "desc": "Return the conjugate of the QuantumChannel."
+    },
+    {
+        "pe1": "transpose_3628",
+        "pe2": "def transpose(self):\n        \"\"\"Return the transpose of the QuantumChannel.\"\"\"\n        # Make bipartite matrix\n        d_in, d_out = self.dim\n        data = np.reshape(self._data, (d_in, d_out, d_in, d_out))\n        # Swap input and output indicies on bipartite matrix\n        data = np.transpose(data, (1, 0, 3, 2))\n        # Transpose channel has input and output dimensions swapped\n        data = np.reshape(data, (d_in * d_out, d_in * d_out))\n        return Choi(\n            data, input_dims=self.output_dims(), output_dims=self.input_dims())",
+        "desc": "Return the transpose of the QuantumChannel."
+    },
+    {
+        "pe1": "conjugate_3627",
+        "pe2": "def conjugate(self):\n        \"\"\"Return the conjugate of the QuantumChannel.\"\"\"\n        return SuperOp(\n            np.conj(self._data), self.input_dims(), self.output_dims())",
+        "desc": "Return the conjugate of the QuantumChannel."
+    },
+    {
+        "pe1": "transpose_3628",
+        "pe2": "def transpose(self):\n        \"\"\"Return the transpose of the QuantumChannel.\"\"\"\n        return SuperOp(\n            np.transpose(self._data),\n            input_dims=self.output_dims(),\n            output_dims=self.input_dims())",
+        "desc": "Return the transpose of the QuantumChannel."
+    },
+    {
+        "pe1": "assemble_3585",
+        "pe2": "def assemble(self):\n        \"\"\"Assemble a QasmQobjInstruction\"\"\"\n        instruction = super().assemble()\n        instruction.label = self._label\n        instruction.snapshot_type = self._snapshot_type\n        return instruction",
+        "desc": "Assemble a QasmQobjInstruction"
+    },
+    {
+        "pe1": "register_5312",
+        "pe2": "def register(linter):\n    \"\"\"required method to auto register this checker \"\"\"\n    linter.register_checker(StringFormatChecker(linter))\n    linter.register_checker(StringConstantChecker(linter))",
+        "desc": "required method to auto register this checker"
+    },
+    {
+        "pe1": "register_5312",
+        "pe2": "def register(linter):\n    \"\"\"required method to auto register this checker\"\"\"\n    linter.register_checker(EncodingChecker(linter))\n    linter.register_checker(ByIdManagedMessagesChecker(linter))",
+        "desc": "required method to auto register this checker"
+    },
+    {
+        "pe1": "register_5312",
+        "pe2": "def register(linter):\n    \"\"\"required method to auto register this checker \"\"\"\n    linter.register_checker(ClassChecker(linter))\n    linter.register_checker(SpecialMethodsChecker(linter))",
+        "desc": "required method to auto register this checker"
+    },
+    {
+        "pe1": "register_5312",
+        "pe2": "def register(linter):\n    \"\"\"required method to auto register this checker\"\"\"\n    linter.register_checker(BasicErrorChecker(linter))\n    linter.register_checker(BasicChecker(linter))\n    linter.register_checker(NameChecker(linter))\n    linter.register_checker(DocStringChecker(linter))\n    linter.register_checker(PassChecker(linter))\n    linter.register_checker(ComparisonChecker(linter))",
+        "desc": "required method to auto register this checker"
+    },
+    {
+        "pe1": "prepare_outdir_6042",
+        "pe2": "def prepare_outdir(self):\n        \"\"\"create temp directory.\"\"\"\n        self._outdir = self.outdir\n        if self._outdir is None:\n            self._tmpdir = TemporaryDirectory()\n            self.outdir = self._tmpdir.name\n        elif isinstance(self.outdir, str):\n            mkdirs(self.outdir)\n        else:\n            raise Exception(\"Error parsing outdir: %s\"%type(self.outdir))\n\n        # handle gene_sets\n        logfile = os.path.join(self.outdir, \"gseapy.%s.%s.log\" % (self.module, self.descriptions))\n        return logfile",
+        "desc": "create temp directory."
+    },
+    {
+        "pe1": "as_tryte_string_7365",
+        "pe2": "def as_tryte_string(self):\n        # type: () -> TryteString\n        \"\"\"\n        Returns a TryteString representation of the transaction.\n        \"\"\"\n        if not self.bundle_hash:\n            raise with_context(\n                exc=RuntimeError(\n                    'Cannot get TryteString representation of {cls} instance '\n                    'without a bundle hash; call ``bundle.finalize()`` first '\n                    '(``exc.context`` has more info).'.format(\n                        cls=type(self).__name__,\n                    ),\n                ),\n\n                context={\n                    'transaction': self,\n                },\n            )\n\n        return super(ProposedTransaction, self).as_tryte_string()",
+        "desc": "Returns a TryteString representation of the transaction."
+    },
+    {
+        "pe1": "_repr_html__7412",
+        "pe2": "def _repr_html_(self):\n        \"\"\"\n        Jupyter Notebook magic repr function.\n        \"\"\"\n        all_keys = list(set(itertools.chain(*[d.keys for d in self])))\n        rows = ''\n        for decor in self:\n            th, tr = decor._repr_html_row_(keys=all_keys)\n            rows += '<tr>{}</tr>'.format(tr)\n        header = '<tr>{}</tr>'.format(th)\n        html = '<table>{}{}</table>'.format(header, rows)\n        return html",
+        "desc": "Jupyter Notebook magic repr function."
+    },
+    {
+        "pe1": "_repr_html__7412",
+        "pe2": "def _repr_html_(self):\n        \"\"\"\n        Jupyter Notebook magic repr function.\n        \"\"\"\n        rows = ''\n        s = '<tr><td><strong>{k}</strong></td><td>{v}</td></tr>'\n        for k, v in self.__dict__.items():\n            rows += s.format(k=k, v=v)\n        html = '<table>{}</table>'.format(rows)\n        return html",
+        "desc": "Jupyter Notebook magic repr function."
+    },
+    {
+        "pe1": "_repr_html__7412",
+        "pe2": "def dict_repr_html(dictionary):\n    \"\"\"\n    Jupyter Notebook magic repr function.\n    \"\"\"\n    rows = ''\n    s = '<tr><td><strong>{k}</strong></td><td>{v}</td></tr>'\n    for k, v in dictionary.items():\n        rows += s.format(k=k, v=v)\n    html = '<table>{}</table>'.format(rows)\n    return html",
+        "desc": "Jupyter Notebook magic repr function."
+    },
+    {
+        "pe1": "to_ogc_wkt_7684",
+        "pe2": "def to_ogc_wkt(self):\n        \"\"\"\n        Returns the CS as a OGC WKT formatted string.\n        \"\"\"\n        string = 'PROJCS[\"%s\", %s, %s, ' % (self.name, self.geogcs.to_ogc_wkt(), self.proj.to_ogc_wkt() )\n        string += \", \".join(param.to_ogc_wkt() for param in self.params)\n        string += ', %s' % self.unit.to_ogc_wkt()\n        string += ', AXIS[\"X\", %s], AXIS[\"Y\", %s]]' % (self.twin_ax[0].ogc_wkt, self.twin_ax[1].ogc_wkt )\n        return string",
+        "desc": "Returns the CS as a OGC WKT formatted string."
+    },
+    {
+        "pe1": "to_esri_wkt_7685",
+        "pe2": "def to_esri_wkt(self):\n        \"\"\"\n        Returns the CS as a ESRI WKT formatted string.\n        \"\"\"\n        string = 'PROJCS[\"%s\", %s, %s, ' % (self.name, self.geogcs.to_esri_wkt(), self.proj.to_esri_wkt() )\n        string += \", \".join(param.to_esri_wkt() for param in self.params)\n        string += ', %s' % self.unit.to_esri_wkt()\n        string += ', AXIS[\"X\", %s], AXIS[\"Y\", %s]]' % (self.twin_ax[0].esri_wkt, self.twin_ax[1].esri_wkt )\n        return string",
+        "desc": "Returns the CS as a ESRI WKT formatted string."
+    },
+    {
+        "pe1": "get_first_name_last_name_8431",
+        "pe2": "def get_last_name_first_name(self):\n        \"\"\"\n        :rtype: str\n        \"\"\"\n        last_names = []\n        if self._get_last_names():\n            last_names += self._get_last_names()\n        first_and_additional_names = []\n        if self._get_first_names():\n            first_and_additional_names += self._get_first_names()\n        if self._get_additional_names():\n            first_and_additional_names += self._get_additional_names()\n        if last_names and first_and_additional_names:\n            return \"{}, {}\".format(\n                helpers.list_to_string(last_names, \" \"),\n                helpers.list_to_string(first_and_additional_names, \" \"))\n        elif last_names:\n            return helpers.list_to_string(last_names, \" \")\n        elif first_and_additional_names:\n            return helpers.list_to_string(first_and_additional_names, \" \")\n        else:\n            return self.get_full_name()",
+        "desc": ":rtype: str"
+    },
+    {
+        "pe1": "_get_titles_8433",
+        "pe2": "def _get_roles(self):\n        \"\"\"\n        :rtype: list(list(str))\n        \"\"\"\n        roles = []\n        for child in self.vcard.getChildren():\n            if child.name == \"ROLE\":\n                roles.append(child.value)\n        return sorted(roles)",
+        "desc": ":rtype: list(list(str))"
+    },
+    {
+        "pe1": "_get_titles_8433",
+        "pe2": "def get_nicknames(self):\n        \"\"\"\n        :rtype: list(list(str))\n        \"\"\"\n        nicknames = []\n        for child in self.vcard.getChildren():\n            if child.name == \"NICKNAME\":\n                nicknames.append(child.value)\n        return sorted(nicknames)",
+        "desc": ":rtype: list(list(str))"
+    },
+    {
+        "pe1": "_get_titles_8433",
+        "pe2": "def _get_notes(self):\n        \"\"\"\n        :rtype: list(list(str))\n        \"\"\"\n        notes = []\n        for child in self.vcard.getChildren():\n            if child.name == \"NOTE\":\n                notes.append(child.value)\n        return sorted(notes)",
+        "desc": ":rtype: list(list(str))"
+    },
+    {
+        "pe1": "_get_titles_8433",
+        "pe2": "def _get_webpages(self):\n        \"\"\"\n        :rtype: list(list(str))\n        \"\"\"\n        urls = []\n        for child in self.vcard.getChildren():\n            if child.name == \"URL\":\n                urls.append(child.value)\n        return sorted(urls)",
+        "desc": ":rtype: list(list(str))"
+    },
+    {
+        "pe1": "setup_8577",
+        "pe2": "def setup(self):\n        \"\"\"Initialization done before entering the debugger-command\n        loop. In particular we set up the call stack used for local\n        variable lookup and frame/up/down commands.\n\n        We return True if we should NOT enter the debugger-command\n        loop.\"\"\"\n        self.forget()\n        if self.settings('dbg_trepan'):\n            self.frame = inspect.currentframe()\n            pass\n        if self.event in ['exception', 'c_exception']:\n            exc_type, exc_value, exc_traceback = self.event_arg\n        else:\n            _, _, exc_traceback = (None, None, None,)  # NOQA\n            pass\n        if self.frame or exc_traceback:\n            self.stack, self.curindex = \\\n                get_stack(self.frame, exc_traceback, None, self)\n            self.curframe = self.stack[self.curindex][0]\n            self.thread_name = Mthread.current_thread_name()\n\n        else:\n            self.stack = self.curframe = \\\n                self.botframe = None\n            pass\n        if self.curframe:\n            self.list_lineno = \\\n                max(1, inspect.getlineno(self.curframe))\n        else:\n            self.list_lineno = None\n            pass\n        # if self.execRcLines()==1: return True\n        return False",
+        "desc": "Initialization done before entering the debugger-command\n        loop. In particular we set up the call stack used for local\n        variable lookup and frame/up/down commands.\n\n        We return True if we should NOT enter the debugger-command\n        loop."
+    },
+    {
+        "pe1": "_populate_commands_8581",
+        "pe2": "def _populate_commands(self):\n        \"\"\" Create an instance of each of the debugger\n        commands. Commands are found by importing files in the\n        directory 'command'. Some files are excluded via an array set\n        in __init__.  For each of the remaining files, we import them\n        and scan for class names inside those files and for each class\n        name, we will create an instance of that class. The set of\n        DebuggerCommand class instances form set of possible debugger\n        commands.\"\"\"\n        cmd_instances = []\n        from trepan.bwprocessor import command as Mcommand\n        eval_cmd_template = 'command_mod.%s(self)'\n        for mod_name in Mcommand.__modules__:\n            import_name = \"command.\" + mod_name\n            try:\n                command_mod = getattr(__import__(import_name), mod_name)\n            except:\n                print('Error importing %s: %s' % (mod_name, sys.exc_info()[0]))\n                continue\n\n            classnames = [ tup[0] for tup in\n                           inspect.getmembers(command_mod, inspect.isclass)\n                           if ('DebuggerCommand' != tup[0] and\n                               tup[0].endswith('Command')) ]\n            for classname in classnames:\n                eval_cmd = eval_cmd_template % classname\n                try:\n                    instance = eval(eval_cmd)\n                    cmd_instances.append(instance)\n                except:\n                    print('Error loading %s from %s: %s' %\n                          (classname, mod_name, sys.exc_info()[0]))\n                    pass\n                pass\n            pass\n        return cmd_instances",
+        "desc": "Create an instance of each of the debugger\n        commands. Commands are found by importing files in the\n        directory 'command'. Some files are excluded via an array set\n        in __init__.  For each of the remaining files, we import them\n        and scan for class names inside those files and for each class\n        name, we will create an instance of that class. The set of\n        DebuggerCommand class instances form set of possible debugger\n        commands."
+    },
+    {
+        "pe1": "print_location_8569",
+        "pe2": "def format_location(proc_obj):\n    \"\"\"Show where we are. GUI's and front-end interfaces often\n    use this to update displays. So it is helpful to make sure\n    we give at least some place that's located in a file.\n    \"\"\"\n    i_stack = proc_obj.curindex\n    if i_stack is None or proc_obj.stack is None:\n        return False\n    location = {}\n    core_obj = proc_obj.core\n    dbgr_obj = proc_obj.debugger\n\n    # Evaluation routines like \"exec\" don't show useful location\n    # info. In these cases, we will use the position before that in\n    # the stack.  Hence the looping below which in practices loops\n    # once and sometimes twice.\n    while i_stack >= 0:\n        frame_lineno = proc_obj.stack[i_stack]\n        i_stack -= 1\n        frame, lineno = frame_lineno\n\n        filename = Mstack.frame2file(core_obj, frame)\n\n        location['filename'] = filename\n        location['fn_name']  = frame.f_code.co_name\n        location['lineno']   = lineno\n\n        if '<string>' == filename and dbgr_obj.eval_string:\n            filename = pyficache.unmap_file(filename)\n            if '<string>' == filename:\n                fd = tempfile.NamedTemporaryFile(suffix='.py',\n                                                 prefix='eval_string',\n                                                 delete=False)\n                fd.write(bytes(dbgr_obj.eval_string, 'UTF-8'))\n                fd.close()\n                pyficache.remap_file(fd.name, '<string>')\n                filename = fd.name\n                pass\n            pass\n\n        opts = {\n            'reload_on_change' : proc_obj.settings('reload'),\n            'output'           : 'plain'\n            }\n        line = pyficache.getline(filename, lineno, opts)\n        if not line:\n            line = linecache.getline(filename, lineno,\n                                     proc_obj.curframe.f_globals)\n            pass\n\n        if line and len(line.strip()) != 0:\n            location['text'] = line\n            pass\n        if '<string>' != filename: break\n        pass\n\n    return location",
+        "desc": "Show where we are. GUI's and front-end interfaces often\n    use this to update displays. So it is helpful to make sure\n    we give at least some place that's located in a file."
+    },
+    {
+        "pe1": "jsonify_parameters_8749",
+        "pe2": "def jsonify_parameters(params):\n    \"\"\"\n    When sent in an authorized REST request, only strings and integers can be\n    transmitted accurately. Other types of data need to be encoded into JSON.\n    \"\"\"\n    result = {}\n    for param, value in params.items():\n        if isinstance(value, types_not_to_encode):\n            result[param] = value\n        else:\n            result[param] = json.dumps(value)\n    return result",
+        "desc": "When sent in an authorized REST request, only strings and integers can be\n    transmitted accurately. Other types of data need to be encoded into JSON."
+    },
+    {
+        "pe1": "verilogTypeOfSig_9397",
+        "pe2": "def systemCTypeOfSig(signalItem):\n    \"\"\"\n    Check if is register or wire\n    \"\"\"\n    if signalItem._const or\\\n       arr_any(signalItem.drivers,\n               lambda d: isinstance(d, HdlStatement)\n               and d._now_is_event_dependent):\n\n        return SIGNAL_TYPE.REG\n    else:\n        return SIGNAL_TYPE.WIRE",
+        "desc": "Check if is register or wire"
+    },
+    {
+        "pe1": "count_id_10031",
+        "pe2": "def count_relations(w0):\n    \"\"\"\n    0 -> no terms idd\n    1 -> most term idd are shared in root morphem\n    2 -> most term idd are shared in flexing morphem\n    3 -> most term idd are shared root <-> flexing (crossed)\n    :param w0:\n    :param w1:\n    :return:\n    \"\"\"\n\n    root_w0_relations = set(chain.from_iterable(relations[t.index, :].indices for t in w0.root))\n    flexing_w0_relations = set(chain.from_iterable(relations[t.index, :].indices for t in w0.flexing))\n\n    def f(w1):\n        root_w1 = set(t.index for t in w1.root)\n        flexing_w1 = set(t.index for t in w1.flexing)\n\n        count = [root_w0_relations.intersection(root_w1),\n                 flexing_w0_relations.intersection(flexing_w1),\n                 root_w0_relations.intersection(flexing_w1) | flexing_w0_relations.intersection(root_w1)]\n\n        if any(count):\n            return max((1,2,3), key=lambda i: len(count[i - 1]))\n        else:\n            return 0\n    return f",
+        "desc": "0 -> no terms idd\n    1 -> most term idd are shared in root morphem\n    2 -> most term idd are shared in flexing morphem\n    3 -> most term idd are shared root <-> flexing (crossed)\n    :param w0:\n    :param w1:\n    :return:"
+    },
+    {
+        "pe1": "update_w_10321",
+        "pe2": "def update_w(self):\n        \"\"\" compute new W \"\"\"\n\n        def select_next(iterval):\n            \"\"\" select the next best data sample using robust map\n            or simply the max iterval ... \"\"\"\n\n            if self._robust_map:\n                k = np.argsort(iterval)[::-1]\n                d_sub = self.data[:,k[:self._robust_nselect]]\n                self.sub.extend(k[:self._robust_nselect])\n\n                # cluster d_sub\n                kmeans_mdl = Kmeans(d_sub, num_bases=self._robust_cluster)\n                kmeans_mdl.factorize(niter=10)\n\n                # get largest cluster\n                h = np.histogram(kmeans_mdl.assigned, range(self._robust_cluster+1))[0]\n                largest_cluster = np.argmax(h)\n                sel = pdist(kmeans_mdl.W[:, largest_cluster:largest_cluster+1], d_sub)\n                sel = k[np.argmin(sel)]\n            else:\n                sel = np.argmax(iterval)\n\n            return sel\n\n        EPS = 10**-8\n\n        if scipy.sparse.issparse(self.data):\n            norm_data = np.sqrt(self.data.multiply(self.data).sum(axis=0))\n            norm_data = np.array(norm_data).reshape((-1))\n        else:\n            norm_data = np.sqrt(np.sum(self.data**2, axis=0))\n\n\n        self.select = []\n\n        if self._method == 'pca' or self._method == 'aa':\n            iterval = norm_data.copy()\n\n        if self._method == 'nmf':\n            iterval = np.sum(self.data, axis=0)/(np.sqrt(self.data.shape[0])*norm_data)\n            iterval = 1.0 - iterval\n\n        self.select.append(select_next(iterval))\n\n\n        for l in range(1, self._num_bases):\n\n            if scipy.sparse.issparse(self.data):\n                c = self.data[:, self.select[-1]:self.select[-1]+1].T * self.data\n                c = np.array(c.todense())\n            else:\n                c = np.dot(self.data[:,self.select[-1]], self.data)\n\n            c = c/(norm_data * norm_data[self.select[-1]])\n\n            if self._method == 'pca':\n                c = 1.0 - np.abs(c)\n                c = c * norm_data\n\n            elif self._method == 'aa':\n                c = (c*-1.0 + 1.0)/2.0\n                c = c * norm_data\n\n            elif self._method == 'nmf':\n                c = 1.0 - np.abs(c)\n\n            ### update the estimated volume\n            iterval = c * iterval\n\n            # detect the next best data point\n            self.select.append(select_next(iterval))\n\n            self._logger.info('cur_nodes: ' + str(self.select))\n\n        # sort indices, otherwise h5py won't work\n        self.W = self.data[:, np.sort(self.select)]\n\n        # \"unsort\" it again to keep the correct order\n        self.W = self.W[:, np.argsort(np.argsort(self.select))]",
+        "desc": "compute new W"
+    },
+    {
+        "pe1": "to_dict_10780",
+        "pe2": "def to_dict(self):\n        \"\"\"\n        convert the fields of the object into a dictionnary\n        \"\"\"\n        dico = dict()\n        for field in self.fields.keys():\n            if field == \"flags\":\n                dico[field] = self.flags2text()\n            elif field == \"state\":\n                dico[field] = self.state2text()\n            else:\n                dico[field] = eval(\"self.\" + field)\n        return dico",
+        "desc": "convert the fields of the object into a dictionnary"
+    },
+    {
+        "pe1": "fetch_ensembl_genes_10897",
+        "pe2": "def fetch_ensembl_exons(build='37'):\n    \"\"\"Fetch the ensembl genes\n    \n    Args:\n        build(str): ['37', '38']\n    \"\"\"\n    LOG.info(\"Fetching ensembl exons build %s ...\", build)\n    if build == '37':\n        url = 'http://grch37.ensembl.org'\n    else:\n        url = 'http://www.ensembl.org'\n    \n    dataset_name = 'hsapiens_gene_ensembl'\n    \n    dataset = pybiomart.Dataset(name=dataset_name, host=url)\n    \n    attributes = [\n        'chromosome_name',\n        'ensembl_gene_id',\n        'ensembl_transcript_id',\n        'ensembl_exon_id',\n        'exon_chrom_start',\n        'exon_chrom_end',\n        '5_utr_start',\n        '5_utr_end',\n        '3_utr_start',\n        '3_utr_end',\n        'strand',\n        'rank'\n    ]\n    \n    filters = {\n        'chromosome_name': CHROMOSOMES,\n    }\n    \n    result = dataset.query(\n        attributes = attributes,\n        filters = filters\n    )\n    \n    return result",
+        "desc": "Fetch the ensembl genes\n    \n    Args:\n        build(str): ['37', '38']"
+    },
+    {
+        "pe1": "institutes_11085",
+        "pe2": "def index():\n    \"\"\"Display a list of all user institutes.\"\"\"\n    institute_objs = user_institutes(store, current_user)\n    institutes_count = ((institute_obj, store.cases(collaborator=institute_obj['_id']).count())\n                        for institute_obj in institute_objs if institute_obj)\n    return dict(institutes=institutes_count)",
+        "desc": "Display a list of all user institutes."
+    },
+    {
+        "pe1": "parseCommandLineArguments_11513",
+        "pe2": "def parseCommandLineArguments():\n  \"\"\"\n  Set up command line parsing.\n  \"\"\"\n  parser = argparse.ArgumentParser(description=\"Calculate parallax error for given G and (V-I)\")\n  parser.add_argument(\"gmag\", help=\"G-band magnitude of source\", type=float)\n  parser.add_argument(\"vmini\", help=\"(V-I) colour of source\", type=float)\n\n  args=vars(parser.parse_args())\n  return args",
+        "desc": "Set up command line parsing."
+    },
+    {
+        "pe1": "makePlot_11542",
+        "pe2": "def makePlot(args):\n  \"\"\"\n  Make the plot with parallax horizons. The plot shows V-band magnitude vs distance for a number of\n  spectral types and over the range 5.7<G<20. In addition a set of crudely drawn contours show the points\n  where 0.1, 1, and 10 per cent relative parallax accracy are reached.\n\n  Parameters\n  ----------\n  \n  args - Command line arguments.\n  \"\"\"\n  distances = 10.0**np.linspace(1,6,10001)\n  av = args['extinction']\n  ai = 0.479*av #Cardelli et al R=3.1\n\n  spts = ['B0I', 'B1V', 'G2V', 'K4V', 'M0V', 'M6V', 'K1III', 'M0III']\n  pointOnePercD = []\n  pointOnePercV = []\n  onePercD = []\n  onePercV = []\n  tenPercD = []\n  tenPercV = []\n  vabsPointOnePerc = []\n  vabsOnePerc = []\n  vabsTenPerc = []\n\n  fig=plt.figure(figsize=(11,7.8))\n  deltaHue = 240.0/(len(spts)-1)\n  hues = (240.0-np.arange(len(spts))*deltaHue)/360.0\n  hsv=np.zeros((1,1,3))\n  hsv[0,0,1]=1.0\n  hsv[0,0,2]=0.9\n  for hue,spt in zip(hues, spts):\n    hsv[0,0,0]=hue\n    vmags = vabsFromSpt(spt)+5.0*np.log10(distances)-5.0+av\n    vmini=vminiFromSpt(spt)+av-ai\n    #gmags = gabsFromSpt(spt)+5.0*np.log10(distances)-5.0\n    gmags = vmags + gminvFromVmini(vmini)\n    relParErr = parallaxErrorSkyAvg(gmags,vmini)*distances/1.0e6\n    observed = (gmags>=5.7) & (gmags<=20.0)\n    relParErrObs = relParErr[observed]\n    # Identify the points where the relative parallax accuracy is 0.1, 1, or 10 per cent.\n    if (relParErrObs.min()<0.001):\n      index = len(relParErrObs[relParErrObs<=0.001])-1\n      pointOnePercD.append(distances[observed][index])\n      pointOnePercV.append(vmags[observed][index])\n      vabsPointOnePerc.append(vabsFromSpt(spt))\n    if (relParErrObs.min()<0.01):\n      index = len(relParErrObs[relParErrObs<=0.01])-1\n      onePercD.append(distances[observed][index])\n      onePercV.append(vmags[observed][index])\n      vabsOnePerc.append(vabsFromSpt(spt))\n    if (relParErrObs.min()<0.1):\n      index = len(relParErrObs[relParErrObs<=0.1])-1\n      tenPercD.append(distances[observed][index])\n      tenPercV.append(vmags[observed][index])\n      vabsTenPerc.append(vabsFromSpt(spt))\n    plt.semilogx(distances[observed], vmags[observed], '-', label=spt, color=hsv_to_rgb(hsv)[0,0,:])\n    if (spt=='B0I'):\n      plt.text(distances[observed][-1]-1.0e5, vmags[observed][-1], spt, horizontalalignment='right',\n          verticalalignment='bottom', fontsize=14)\n    else:\n      plt.text(distances[observed][-1], vmags[observed][-1], spt, horizontalalignment='center',\n          verticalalignment='bottom', fontsize=14)\n\n  # Draw the \"contours\" of constant relative parallax accuracy.\n  pointOnePercD = np.array(pointOnePercD)\n  pointOnePercV = np.array(pointOnePercV)\n  indices = np.argsort(vabsPointOnePerc)\n  plt.semilogx(pointOnePercD[indices],pointOnePercV[indices],'k--')\n  plt.text(pointOnePercD[indices][-1]*1.2,pointOnePercV[indices][-1]-2.5,\"$0.1$\\\\%\", ha='right', size=16,\n      bbox=dict(boxstyle=\"round, pad=0.3\", ec=(0.0, 0.0, 0.0), fc=(1.0, 1.0, 1.0),))\n\n  onePercD = np.array(onePercD)\n  onePercV = np.array(onePercV)\n  indices = np.argsort(vabsOnePerc)\n  plt.semilogx(onePercD[indices],onePercV[indices],'k--')\n  plt.text(onePercD[indices][-1]*1.2,onePercV[indices][-1]-2.5,\"$1$\\\\%\", ha='right', size=16,\n      bbox=dict(boxstyle=\"round, pad=0.3\", ec=(0.0, 0.0, 0.0), fc=(1.0, 1.0, 1.0),))\n\n  tenPercD = np.array(tenPercD)\n  tenPercV = np.array(tenPercV)\n  indices = np.argsort(vabsTenPerc)\n  plt.semilogx(tenPercD[indices],tenPercV[indices],'k--')\n  plt.text(tenPercD[indices][-1]*1.5,tenPercV[indices][-1]-2.5,\"$10$\\\\%\", ha='right', size=16,\n      bbox=dict(boxstyle=\"round, pad=0.3\", ec=(0.0, 0.0, 0.0), fc=(1.0, 1.0, 1.0),))\n\n  plt.title('Parallax relative accuracy horizons ($A_V={0}$)'.format(av))\n\n  plt.xlabel('Distance [pc]')\n  plt.ylabel('V')\n  plt.grid()\n  #leg=plt.legend(loc=4, fontsize=14, labelspacing=0.5)\n  plt.ylim(5,26)\n  \n  basename='ParallaxHorizons'\n  if (args['pdfOutput']):\n    plt.savefig(basename+'.pdf')\n  elif (args['pngOutput']):\n    plt.savefig(basename+'.png')\n  else:\n    plt.show()",
+        "desc": "Make the plot with parallax horizons. The plot shows V-band magnitude vs distance for a number of\n  spectral types and over the range 5.7<G<20. In addition a set of crudely drawn contours show the points\n  where 0.1, 1, and 10 per cent relative parallax accracy are reached.\n\n  Parameters\n  ----------\n  \n  args - Command line arguments."
+    },
+    {
+        "pe1": "safe_start_ingest_11815",
+        "pe2": "def safe_start_capture(event):\n    '''Start a capture process but make sure to catch any errors during this\n    process, log them but otherwise ignore them.\n    '''\n    try:\n        start_capture(event)\n    except Exception:\n        logger.error('Recording failed')\n        logger.error(traceback.format_exc())\n        # Update state\n        recording_state(event.uid, 'capture_error')\n        update_event_status(event, Status.FAILED_RECORDING)\n        set_service_status_immediate(Service.CAPTURE, ServiceStatus.IDLE)",
+        "desc": "Start a capture process but make sure to catch any errors during this\n    process, log them but otherwise ignore them."
+    },
+    {
+        "pe1": "add_parameters_12068",
+        "pe2": "def add_parameters(traj):\n        \"\"\"Adds all neuron group parameters to `traj`.\"\"\"\n        assert(isinstance(traj,Trajectory))\n\n        traj.v_standard_parameter = Brian2Parameter\n        scale = traj.simulation.scale\n\n        traj.f_add_parameter('connections.R_ee', 1.0, comment='Scaling factor for clustering')\n\n        traj.f_add_parameter('connections.clustersize_e', 100, comment='Size of a cluster')\n        traj.f_add_parameter('connections.strength_factor', 2.5,\n                             comment='Factor for scaling cluster weights')\n\n        traj.f_add_parameter('connections.p_ii', 0.25,\n                            comment='Connection probability from inhibitory to inhibitory' )\n        traj.f_add_parameter('connections.p_ei', 0.25,\n                            comment='Connection probability from inhibitory to excitatory' )\n        traj.f_add_parameter('connections.p_ie', 0.25,\n                            comment='Connection probability from excitatory to inhibitory' )\n        traj.f_add_parameter('connections.p_ee', 0.1,\n                            comment='Connection probability from excitatory to excitatory' )\n\n        traj.f_add_parameter('connections.J_ii', 0.027/np.sqrt(scale),\n                             comment='Connection strength from inhibitory to inhibitory')\n        traj.f_add_parameter('connections.J_ei', 0.032/np.sqrt(scale),\n                             comment='Connection strength from inhibitory to excitatroy')\n        traj.f_add_parameter('connections.J_ie', 0.009/np.sqrt(scale),\n                             comment='Connection strength from excitatory to inhibitory')\n        traj.f_add_parameter('connections.J_ee', 0.012/np.sqrt(scale),\n                             comment='Connection strength from excitatory to excitatory')",
+        "desc": "Adds all neuron group parameters to `traj`."
+    },
+    {
+        "pe1": "_clean_meta_12817",
+        "pe2": "def _clean_meta(form: IMeta) -> LispForm:\n    \"\"\"Remove reader metadata from the form's meta map.\"\"\"\n    assert form.meta is not None, \"Form must have non-null 'meta' attribute\"\n    meta = form.meta.dissoc(reader.READER_LINE_KW, reader.READER_COL_KW)\n    if len(meta) == 0:\n        return None\n    return cast(lmap.Map, meta)",
+        "desc": "Remove reader metadata from the form's meta map."
+    },
+    {
+        "pe1": "migrate_window_13383",
+        "pe2": "def migrate_control(comp):\n    \"Take a pythoncard background resource and convert to a gui2py window\"\n    ret = {}\n    for k, v in comp.items():\n        if k == 'type':\n            v = CTRL_MAP[v]._meta.name\n        elif k == 'menubar':\n            pass\n        elif k == 'components':\n            v = [migrate_control(comp) for comp in v]\n        else:\n            k = SPEC_MAP['Widget'].get(k, k)\n            if comp['type'] in SPEC_MAP:\n                k = SPEC_MAP[comp['type']].get(k, k)\n            if k == 'font':\n                v = migrate_font(v)\n        ret[k] = v\n    return ret",
+        "desc": "Take a pythoncard background resource and convert to a gui2py window"
+    },
+    {
+        "pe1": "failure_message_13515",
+        "pe2": "def failure_message(self):\n        \"\"\" str: A message describing the query failure. \"\"\"\n\n        message = failure_message(self.query.description, self.query.options)\n\n        if len(self) > 0:\n            message += \", found {count} {matches}: {results}\".format(\n                count=len(self),\n                matches=declension(\"match\", \"matches\", len(self)),\n                results=\", \".join([desc(node.text) for node in self]))\n        else:\n            message += \" but there were no matches\"\n\n        if self._rest:\n            elements = \", \".join([desc(element.text) for element in self._rest])\n            message += (\". Also found {}, which matched the selector\"\n                        \" but not all filters.\".format(elements))\n\n        return message",
+        "desc": "str: A message describing the query failure."
+    },
+    {
+        "pe1": "supplementary_files_14392",
+        "pe2": "def other_supplementary_files(self):\n        \"\"\"The supplementary files of this notebook\"\"\"\n        if self._other_supplementary_files is not None:\n            return self._other_supplementary_files\n        return getattr(self.nb.metadata, 'other_supplementary_files', None)",
+        "desc": "The supplementary files of this notebook"
+    },
+    {
+        "pe1": "makeService_14822",
+        "pe2": "def makeService(opt):\n    \"\"\"Make a service\n\n    :params opt: dictionary-like object with 'freq', 'config' and 'messages'\n    :returns: twisted.application.internet.TimerService that at opt['freq']\n              checks for stale processes in opt['config'], and sends\n              restart messages through opt['messages']\n    \"\"\"\n    restarter, path = beatcheck.parseConfig(opt)\n    pool = client.HTTPConnectionPool(reactor)\n    agent = client.Agent(reactor=reactor, pool=pool)\n    settings = Settings(reactor=reactor, agent=agent)\n    states = {}\n    checker = functools.partial(check, settings, states, path)\n    httpcheck = tainternet.TimerService(opt['freq'], run, restarter, checker)\n    httpcheck.setName('httpcheck')\n    return heart.wrapHeart(httpcheck)",
+        "desc": "Make a service\n\n    :params opt: dictionary-like object with 'freq', 'config' and 'messages'\n    :returns: twisted.application.internet.TimerService that at opt['freq']\n              checks for stale processes in opt['config'], and sends\n              restart messages through opt['messages']"
+    },
+    {
+        "pe1": "bip32_serialize_14892",
+        "pe2": "def bip32_deserialize(data):\n    \"\"\"\n    Derived from code from pybitcointools (https://github.com/vbuterin/pybitcointools)\n    by Vitalik Buterin\n    \"\"\"\n    dbin = changebase(data, 58, 256)\n    if bin_dbl_sha256(dbin[:-4])[:4] != dbin[-4:]:\n        raise Exception(\"Invalid checksum\")\n    vbytes = dbin[0:4]\n    depth = from_byte_to_int(dbin[4])\n    fingerprint = dbin[5:9]\n    i = decode(dbin[9:13], 256)\n    chaincode = dbin[13:45]\n    key = dbin[46:78]+b'\\x01' if vbytes in PRIVATE else dbin[45:78]\n    return (vbytes, depth, fingerprint, i, chaincode, key)",
+        "desc": "Derived from code from pybitcointools (https://github.com/vbuterin/pybitcointools)\n    by Vitalik Buterin"
+    },
+    {
+        "pe1": "_fetchChildren_15033",
+        "pe2": "def _fetchChildren(self):\n        '''Fetch and return new child items.'''\n        children = []\n\n        # List paths under this directory.\n        paths = []\n        for name in os.listdir(self.path):\n            paths.append(os.path.normpath(os.path.join(self.path, name)))\n\n        # Handle collections.\n        collections, remainder = clique.assemble(\n            paths, [clique.PATTERNS['frames']]\n        )\n\n        for path in remainder:\n            try:\n                child = ItemFactory(path)\n            except ValueError:\n                pass\n            else:\n                children.append(child)\n\n        for collection in collections:\n            children.append(Collection(collection))\n\n        return children",
+        "desc": "Fetch and return new child items."
+    },
+    {
+        "pe1": "_fetchChildren_15033",
+        "pe2": "def _fetchChildren(self):\n        '''Fetch and return new child items.'''\n        children = []\n        for path in self._collection:\n            try:\n                child = ItemFactory(path)\n            except ValueError:\n                pass\n            else:\n                children.append(child)\n\n        return children",
+        "desc": "Fetch and return new child items."
+    },
+    {
+        "pe1": "read_14531",
+        "pe2": "def read(*paths):\n    \"\"\"Build a file path from *paths* and return the contents.\"\"\"\n    filename = os.path.join(*paths)\n    with codecs.open(filename, mode='r', encoding='utf-8') as handle:\n        return handle.read()",
+        "desc": "Build a file path from *paths* and return the contents."
+    },
+    {
+        "pe1": "_viewport_default_15845",
+        "pe2": "def _diagram_canvas_default(self):\n        \"\"\" Trait initialiser \"\"\"\n\n        canvas = Canvas()\n\n        for tool in self.tools:\n            canvas.tools.append(tool(canvas))\n\n        return canvas",
+        "desc": "Trait initialiser"
+    },
+    {
+        "pe1": "_viewport_default_15845",
+        "pe2": "def _viewport_default(self):\n        \"\"\" Trait initialiser \"\"\"\n\n        vp = Viewport(component=self.diagram_canvas, enable_zoom=True)\n        vp.view_position = [0,0]\n        vp.tools.append(ViewportPanTool(vp))\n        return vp",
+        "desc": "Trait initialiser"
+    },
+    {
+        "pe1": "_maxiter_default_15839",
+        "pe2": "def _name_default(self):\n        \"\"\" Trait initialiser.\n        \"\"\"\n        # 'obj' is a io.File\n        self.obj.on_trait_change(self.on_path, \"path\")\n\n        return basename(self.obj.path)",
+        "desc": "Trait initialiser."
+    },
+    {
+        "pe1": "_get_all_graphs_15840",
+        "pe2": "def _get_name(self):\n        \"\"\" Property getter.\n        \"\"\"\n        if (self.tail_node is not None) and (self.head_node is not None):\n            return \"%s %s %s\" % (self.tail_node.ID, self.conn,\n                                 self.head_node.ID)\n        else:\n            return \"Edge\"",
+        "desc": "Property getter."
+    },
+    {
+        "pe1": "_maxiter_default_15839",
+        "pe2": "def _component_default(self):\n        \"\"\" Trait initialiser.\n        \"\"\"\n        component = Container(fit_window=False, auto_size=True,\n            bgcolor=\"green\")#, position=list(self.pos) )\n        component.tools.append( MoveTool(component) )\n#        component.tools.append( TraitsTool(component) )\n        return component",
+        "desc": "Trait initialiser."
+    },
+    {
+        "pe1": "_maxiter_default_15839",
+        "pe2": "def _vp_default(self):\n        \"\"\" Trait initialiser.\n        \"\"\"\n        vp = Viewport(component=self.component)\n        vp.enable_zoom=True\n#        vp.view_position = [-10, -10]\n        vp.tools.append(ViewportPanTool(vp))\n        return vp",
+        "desc": "Trait initialiser."
+    },
+    {
+        "pe1": "main_16861",
+        "pe2": "def  main( argv ):\n    \"\"\"main program loop\"\"\"\n\n    global output_dir\n\n    try:\n        opts, args = getopt.getopt( sys.argv[1:], \\\n                                    \"ht:o:p:\",    \\\n                                    [\"help\", \"title=\", \"output=\", \"prefix=\"] )\n    except getopt.GetoptError:\n        usage()\n        sys.exit( 2 )\n\n    if args == []:\n        usage()\n        sys.exit( 1 )\n\n    # process options\n    #\n    project_title  = \"Project\"\n    project_prefix = None\n    output_dir     = None\n\n    for opt in opts:\n        if opt[0] in ( \"-h\", \"--help\" ):\n            usage()\n            sys.exit( 0 )\n\n        if opt[0] in ( \"-t\", \"--title\" ):\n            project_title = opt[1]\n\n        if opt[0] in ( \"-o\", \"--output\" ):\n            utils.output_dir = opt[1]\n\n        if opt[0] in ( \"-p\", \"--prefix\" ):\n            project_prefix = opt[1]\n\n    check_output()\n\n    # create context and processor\n    source_processor  = SourceProcessor()\n    content_processor = ContentProcessor()\n\n    # retrieve the list of files to process\n    file_list = make_file_list( args )\n    for filename in file_list:\n        source_processor.parse_file( filename )\n        content_processor.parse_sources( source_processor )\n\n    # process sections\n    content_processor.finish()\n\n    formatter = HtmlFormatter( content_processor, project_title, project_prefix )\n\n    formatter.toc_dump()\n    formatter.index_dump()\n    formatter.section_dump_all()",
+        "desc": "main program loop"
+    },
+    {
+        "pe1": "GamePlayFinder_17090",
+        "pe2": "def PlayerSeasonFinder(**kwargs):\n    \"\"\" Docstring will be filled in by __init__.py \"\"\"\n\n    if 'offset' not in kwargs:\n        kwargs['offset'] = 0\n\n    playerSeasons = []\n    while True:\n        querystring = _kwargs_to_qs(**kwargs)\n        url = '{}?{}'.format(PSF_URL, querystring)\n        if kwargs.get('verbose', False):\n            print(url)\n        html = utils.get_html(url)\n        doc = pq(html)\n        table = doc('table#results')\n        df = utils.parse_table(table)\n        if df.empty:\n            break\n\n        thisSeason = list(zip(df.player_id, df.year))\n        playerSeasons.extend(thisSeason)\n\n        if doc('*:contains(\"Next Page\")'):\n            kwargs['offset'] += 100\n        else:\n            break\n\n    return playerSeasons",
+        "desc": "Docstring will be filled in by __init__.py"
+    },
+    {
+        "pe1": "get_scope_list_17892",
+        "pe2": "def get_scope_names(self) -> list:\n        \"\"\"\n        Return the list of all contained scope from global to local\n        \"\"\"\n        # allow global scope to have an None string instance\n        lscope = []\n        for scope in reversed(self.get_scope_list()):\n            if scope.name is not None:\n                # handle fun/block scope decoration\n                lscope.append(scope.name)\n        return lscope",
+        "desc": "Return the list of all contained scope from global to local"
+    },
+    {
+        "pe1": "to_fmt_17902",
+        "pe2": "def to_fmt(self):\n    \"\"\"\n    Return an Fmt representation for pretty-printing\n    \"\"\"\n    qual = \"evalctx\"\n    lseval = []\n    block = fmt.block(\":\\n\", \"\", fmt.tab(lseval))\n    txt = fmt.sep(\" \", [qual, block])\n    lseval.append(self._sig.to_fmt())\n    if len(self.resolution) > 0:\n        lsb = []\n        for k in sorted(self.resolution.keys()):\n            s = self.resolution[k]\n            if s is not None:\n                lsb.append(\n                    fmt.end(\n                        \"\\n\",\n                        [\"'%s': %s (%s)\" % (k, s, s().show_name())]\n                    )\n                )\n            else:\n                lsb.append(fmt.end(\"\\n\", [\"'%s': Unresolved\" % (k)]))\n        if self._translate_to is not None:\n            lsb.append(\"use translator:\")\n            lsb.append(self._translate_to.to_fmt())\n        if self._variadic_types is not None:\n            lsb.append(\"variadic types:\\n\")\n            arity = self._sig.arity\n            for t in self._variadic_types:\n                lsb.append(\"[%d] : %s\\n\" % (arity, t))\n                arity += 1\n        lseval.append(fmt.block(\"\\nresolution :\\n\", \"\", fmt.tab(lsb)))\n    return txt",
+        "desc": "Return an Fmt representation for pretty-printing"
+    },
+    {
+        "pe1": "to_fmt_17902",
+        "pe2": "def to_fmt(self):\n    \"\"\"\n    Return an Fmt representation for pretty-printing\n    \"\"\"\n    params = \"\"\n    txt = fmt.sep(\" \", ['val'])\n    name = self.show_name()\n    if name != \"\":\n        txt.lsdata.append(name)\n    txt.lsdata.append('(%s)' % self.value)\n    txt.lsdata.append(': ' + self.tret)\n    return txt",
+        "desc": "Return an Fmt representation for pretty-printing"
+    },
+    {
+        "pe1": "to_fmt_17902",
+        "pe2": "def to_fmt(self):\n    \"\"\"\n    Return an Fmt representation for pretty-printing\n    \"\"\"\n    params = \"\"\n    txt = fmt.sep(\" \", ['fun'])\n    name = self.show_name()\n    if name != \"\":\n        txt.lsdata.append(name)\n    tparams = []\n    if self.tparams is not None:\n        tparams = list(self.tparams)\n    if self.variadic:\n        tparams.append('...')\n    params = '(' + \", \".join(tparams) + ')'\n    txt.lsdata.append(': ' + params)\n    txt.lsdata.append('-> ' + self.tret)\n    return txt",
+        "desc": "Return an Fmt representation for pretty-printing"
+    },
+    {
+        "pe1": "to_fmt_17902",
+        "pe2": "def to_fmt(self) -> fmt.indentable:\n        \"\"\"\n        Return an Fmt representation for pretty-printing\n        \"\"\"\n        lsb = []\n        if len(self._lsig) > 0:\n            for s in self._lsig:\n                lsb.append(s.to_fmt())\n        block = fmt.block(\"(\", \")\", fmt.sep(', ', lsb))\n        qual = \"tuple\"\n        txt = fmt.sep(\"\", [qual, block])\n        return txt",
+        "desc": "Return an Fmt representation for pretty-printing"
+    },
+    {
+        "pe1": "internal_name_17949",
+        "pe2": "def internal_name(self):\n        \"\"\"\n        Return the unique internal name\n        \"\"\"\n        unq = 'f_' + super().internal_name()\n        if self.tparams is not None:\n            unq += \"_\" + \"_\".join(self.tparams)\n        if self.tret is not None:\n            unq += \"_\" + self.tret\n        return unq",
+        "desc": "Return the unique internal name"
+    },
+    {
+        "pe1": "list_overlay_names_15995",
+        "pe2": "def list_overlay_names(self):\n        \"\"\"Return list of overlay names.\"\"\"\n\n        bucket = self.s3resource.Bucket(self.bucket)\n\n        overlay_names = []\n        for obj in bucket.objects.filter(\n            Prefix=self.overlays_key_prefix\n        ).all():\n\n            overlay_file = obj.key.rsplit('/', 1)[-1]\n            overlay_name, ext = overlay_file.split('.')\n            overlay_names.append(overlay_name)\n\n        return overlay_names",
+        "desc": "Return list of overlay names."
+    },
+    {
+        "pe1": "write_inp_18323",
+        "pe2": "def write_inp(self):\n    \"\"\"\n    Returns the material definition as a string in Abaqus INP format.\n    \"\"\"\n    template = self.get_template()\n    plastic_table = self.get_plastic_table()\n    return template.substitute({\n        \"class\": self.__class__.__name__,\n        \"label\": self.label,\n        \"young_modulus\": self.young_modulus,\n        \"poisson_ratio\": self.poisson_ratio,\n        \"plastic_table\": (self.get_plastic_table()[[\"stress\", \"plastic_strain\"]]\n                          .to_csv(header = False, \n                                  index = False,\n                                  sep = \",\").strip())}).strip()",
+        "desc": "Returns the material definition as a string in Abaqus INP format."
+    },
+    {
+        "pe1": "get_plastic_table_18324",
+        "pe2": "def get_plastic_table(self):\n     \"\"\"\n     Calculates the plastic data\n     \"\"\"\n     K = self.consistency\n     sy = self.yield_stress\n     n = self.hardening_exponent\n     eps_max = self.max_strain\n     Np = self.strain_data_points\n     plastic_strain = np.linspace(0., eps_max, Np)\n     stress = sy + K * plastic_strain**n \n     return pd.DataFrame({\"stress\": stress, \n                          \"plastic_strain\": plastic_strain})",
+        "desc": "Calculates the plastic data"
+    },
+    {
+        "pe1": "ds2n_18623",
+        "pe2": "def ds2p(self):\n        \"\"\"Calculates the derivative of the neutron separation energies:\n\n        ds2n(Z,A) = s2n(Z,A) - s2n(Z,A+2)\n        \"\"\"\n        idx = [(x[0] + 2, x[1]) for x in self.df.index]\n        values = self.s2p.values - self.s2p.loc[idx].values\n        return Table(df=pd.Series(values, index=self.df.index, name='ds2p' + '(' + self.name + ')'))",
+        "desc": "Calculates the derivative of the neutron separation energies:\n\n        ds2n(Z,A) = s2n(Z,A) - s2n(Z,A+2)"
+    },
+    {
+        "pe1": "close_19048",
+        "pe2": "def close(self):\n        \"\"\"\n        Stop listing for new connections and close all open connections.\n        \n        :returns: Deferred that calls back once everything is closed.\n        \"\"\"\n        assert self._opened, \"RPC System is not opened\"\n        logger.debug(\"Closing rpc system. Stopping ping loop\")\n        self._ping_loop.stop()\n        if self._ping_current_iteration:\n            self._ping_current_iteration.cancel()\n        return self._connectionpool.close()",
+        "desc": "Stop listing for new connections and close all open connections.\n        \n        :returns: Deferred that calls back once everything is closed."
+    },
+    {
+        "pe1": "pid_exists_4297",
+        "pe2": "def pid_exists(pid):\n    \"\"\"Check whether pid exists in the current process table.\"\"\"\n    if not isinstance(pid, int):\n        raise TypeError('an integer is required')\n    if pid < 0:\n        return False\n    try:\n        os.kill(pid, 0)\n    except OSError:\n        e = sys.exc_info()[1]\n        return e.errno == errno.EPERM\n    else:\n        return True",
+        "desc": "Check whether pid exists in the current process table."
+    },
+    {
+        "pe1": "get_disk_usage_19620",
+        "pe2": "def get_disk_usage(path):\n    \"\"\"Return disk usage associated with path.\"\"\"\n    st = os.statvfs(path)\n    free = (st.f_bavail * st.f_frsize)\n    total = (st.f_blocks * st.f_frsize)\n    used = (st.f_blocks - st.f_bfree) * st.f_frsize\n    percent = usage_percent(used, total, _round=1)\n    # NB: the percentage is -5% than what shown by df due to\n    # reserved blocks that we are currently not considering:\n    # http://goo.gl/sWGbH\n    return nt_diskinfo(total, used, free, percent)",
+        "desc": "Return disk usage associated with path."
+    },
+    {
+        "pe1": "cwd_filt_20111",
+        "pe2": "def cwd_filt2(depth):\n    \"\"\"Return the last depth elements of the current working directory.\n\n    $HOME is always replaced with '~'.\n    If depth==0, the full path is returned.\"\"\"\n\n    full_cwd = os.getcwdu()\n    cwd = full_cwd.replace(HOME,\"~\").split(os.sep)\n    if '~' in cwd and len(cwd) == depth+1:\n        depth += 1\n    drivepart = ''\n    if sys.platform == 'win32' and len(cwd) > depth:\n        drivepart = os.path.splitdrive(full_cwd)[0]\n    out = drivepart + '/'.join(cwd[-depth:])\n\n    return out or os.sep",
+        "desc": "Return the last depth elements of the current working directory.\n\n    $HOME is always replaced with '~'.\n    If depth==0, the full path is returned."
+    },
+    {
+        "pe1": "get_history_19740",
+        "pe2": "def get_history(self):\n        \"\"\"get all msg_ids, ordered by time submitted.\"\"\"\n        msg_ids = self._records.keys()\n        return sorted(msg_ids, key=lambda m: self._records[m]['submitted'])",
+        "desc": "get all msg_ids, ordered by time submitted."
+    },
+    {
+        "pe1": "virtual_memory_19618",
+        "pe2": "def virtual_memory():\n    \"\"\"System virtual memory as a namedtuple.\"\"\"\n    total, active, inactive, wired, free = _psutil_osx.get_virtual_mem()\n    avail = inactive + free\n    used = active + inactive + wired\n    percent = usage_percent((total - avail), total, _round=1)\n    return nt_virtmem_info(total, avail, percent, used, free,\n                           active, inactive, wired)",
+        "desc": "System virtual memory as a namedtuple."
+    },
+    {
+        "pe1": "swap_memory_19619",
+        "pe2": "def swap_memory():\n    \"\"\"Swap system memory as a (total, used, free, sin, sout) tuple.\"\"\"\n    total, used, free, sin, sout = _psutil_osx.get_swap_mem()\n    percent = usage_percent(used, total, _round=1)\n    return nt_swapmeminfo(total, used, free, percent, sin, sout)",
+        "desc": "Swap system memory as a (total, used, free, sin, sout) tuple."
+    },
+    {
+        "pe1": "get_memory_info_20346",
+        "pe2": "def get_ext_memory_info(self):\n        \"\"\"Return a tuple with the process' RSS and VMS size.\"\"\"\n        rss, vms, pfaults, pageins = _psutil_osx.get_process_memory_info(self.pid)\n        return self._nt_ext_mem(rss, vms,\n                                pfaults * _PAGESIZE,\n                                pageins * _PAGESIZE)",
+        "desc": "Return a tuple with the process' RSS and VMS size."
+    },
+    {
+        "pe1": "load_ipython_extension_20303",
+        "pe2": "def load_ipython_extension(ip):\n    \"\"\"Load the extension in IPython.\"\"\"\n    import sympy\n\n    # sympyprinting extension has been moved to SymPy as of 0.7.2, if it\n    # exists there, warn the user and import it\n    try:\n        import sympy.interactive.ipythonprinting\n    except ImportError:\n        pass\n    else:\n        warnings.warn(\"The sympyprinting extension in IPython is deprecated, \"\n            \"use sympy.interactive.ipythonprinting\")\n        ip.extension_manager.load_extension('sympy.interactive.ipythonprinting')\n        return\n\n    global _loaded\n    if not _loaded:\n        plaintext_formatter = ip.display_formatter.formatters['text/plain']\n\n        for cls in (object, str):\n            plaintext_formatter.for_type(cls, print_basic_unicode)\n\n        printable_containers = [list, tuple]\n\n        # set and frozen set were broken with SymPy's latex() function, but\n        # was fixed in the 0.7.1-git development version. See\n        # http://code.google.com/p/sympy/issues/detail?id=3062.\n        if sympy.__version__ > '0.7.1':\n            printable_containers += [set, frozenset]\n        else:\n            plaintext_formatter.for_type(cls, print_basic_unicode)\n\n        plaintext_formatter.for_type_by_name(\n            'sympy.core.basic', 'Basic', print_basic_unicode\n        )\n        plaintext_formatter.for_type_by_name(\n            'sympy.matrices.matrices', 'Matrix', print_basic_unicode\n        )\n\n        png_formatter = ip.display_formatter.formatters['image/png']\n\n        png_formatter.for_type_by_name(\n            'sympy.core.basic', 'Basic', print_png\n        )\n        png_formatter.for_type_by_name(\n            'sympy.matrices.matrices', 'Matrix', print_display_png\n        )\n        for cls in [dict, int, long, float] + printable_containers:\n            png_formatter.for_type(cls, print_png)\n\n        latex_formatter = ip.display_formatter.formatters['text/latex']\n        latex_formatter.for_type_by_name(\n            'sympy.core.basic', 'Basic', print_latex\n        )\n        latex_formatter.for_type_by_name(\n            'sympy.matrices.matrices', 'Matrix', print_latex\n        )\n\n        for cls in printable_containers:\n            # Use LaTeX only if every element is printable by latex\n            latex_formatter.for_type(cls, print_latex)\n\n        _loaded = True",
+        "desc": "Load the extension in IPython."
+    },
+    {
+        "pe1": "get_system_per_cpu_times_20344",
+        "pe2": "def get_system_per_cpu_times():\n    \"\"\"Return system CPU times as a named tuple\"\"\"\n    ret = []\n    for cpu_t in _psutil_bsd.get_system_per_cpu_times():\n        user, nice, system, idle, irq = cpu_t\n        item = _cputimes_ntuple(user, nice, system, idle, irq)\n        ret.append(item)\n    return ret",
+        "desc": "Return system CPU times as a named tuple"
+    },
+    {
+        "pe1": "get_memory_info_20346",
+        "pe2": "def get_memory_info(self):\n        \"\"\"Return a tuple with the process' RSS and VMS size.\"\"\"\n        rss, vms = _psutil_bsd.get_process_memory_info(self.pid)[:2]\n        return nt_meminfo(rss, vms)",
+        "desc": "Return a tuple with the process' RSS and VMS size."
+    },
+    {
+        "pe1": "read_14531",
+        "pe2": "def read(*paths):\n    \"\"\"Build a file path from *paths* and return the contents.\"\"\"\n    with open(os.path.join(*paths), 'r') as file_handler:\n        return file_handler.read()",
+        "desc": "Build a file path from *paths* and return the contents."
+    },
+    {
+        "pe1": "inputhook_pyglet_20752",
+        "pe2": "def inputhook_glut():\n    \"\"\"Run the pyglet event loop by processing pending events only.\n\n    This keeps processing pending events until stdin is ready.  After\n    processing all pending events, a call to time.sleep is inserted.  This is\n    needed, otherwise, CPU usage is at 100%.  This sleep time should be tuned\n    though for best performance.\n    \"\"\"\n    # We need to protect against a user pressing Control-C when IPython is\n    # idle and this is running. We trap KeyboardInterrupt and pass.\n\n    signal.signal(signal.SIGINT, glut_int_handler)\n\n    try:\n        t = clock()\n\n        # Make sure the default window is set after a window has been closed\n        if glut.glutGetWindow() == 0:\n            glut.glutSetWindow( 1 )\n            glutMainLoopEvent()\n            return 0\n\n        while not stdin_ready():\n            glutMainLoopEvent()\n            # We need to sleep at this point to keep the idle CPU load\n            # low.  However, if sleep to long, GUI response is poor.  As\n            # a compromise, we watch how often GUI events are being processed\n            # and switch between a short and long sleep time.  Here are some\n            # stats useful in helping to tune this.\n            # time    CPU load\n            # 0.001   13%\n            # 0.005   3%\n            # 0.01    1.5%\n            # 0.05    0.5%\n            used_time = clock() - t\n            if used_time > 5*60.0:\n                # print 'Sleep for 5 s'  # dbg\n                time.sleep(5.0)\n            elif used_time > 10.0:\n                # print 'Sleep for 1 s'  # dbg\n                time.sleep(1.0)\n            elif used_time > 0.1:\n                # Few GUI events coming in, so we can sleep longer\n                # print 'Sleep for 0.05 s'  # dbg\n                time.sleep(0.05)\n            else:\n                # Many GUI events coming in, so sleep only very little\n                time.sleep(0.001)\n    except KeyboardInterrupt:\n        pass\n    return 0",
+        "desc": "Run the pyglet event loop by processing pending events only.\n\n    This keeps processing pending events until stdin is ready.  After\n    processing all pending events, a call to time.sleep is inserted.  This is\n    needed, otherwise, CPU usage is at 100%.  This sleep time should be tuned\n    though for best performance."
+    },
+    {
+        "pe1": "dist_in_usersite_15407",
+        "pe2": "def dist_in_usersite(dist):\n    \"\"\"\n    Return True if given Distribution is installed in user site.\n    \"\"\"\n    if user_site:\n        return normalize_path(dist_location(dist)).startswith(normalize_path(user_site))\n    else:\n        return False",
+        "desc": "Return True if given Distribution is installed in user site."
+    },
+    {
+        "pe1": "pseudo_tempname_15468",
+        "pe2": "def pseudo_tempname(self):\n        \"\"\"Return a pseudo-tempname base in the install directory.\n        This code is intentionally naive; if a malicious party can write to\n        the target directory you're already in deep doodoo.\n        \"\"\"\n        try:\n            pid = os.getpid()\n        except:\n            pid = random.randint(0,sys.maxint)\n        return os.path.join(self.install_dir, \"test-easy-install-%s\" % pid)",
+        "desc": "Return a pseudo-tempname base in the install directory.\n        This code is intentionally naive; if a malicious party can write to\n        the target directory you're already in deep doodoo."
+    },
+    {
+        "pe1": "get_system_users_19624",
+        "pe2": "def get_system_users():\n    \"\"\"Return currently connected users as a list of namedtuples.\"\"\"\n    retlist = []\n    rawlist = _psutil_linux.get_system_users()\n    for item in rawlist:\n        user, tty, hostname, tstamp, user_process = item\n        # XXX the underlying C function includes entries about\n        # system boot, run level and others.  We might want\n        # to use them in the future.\n        if not user_process:\n            continue\n        if hostname == ':0.0':\n            hostname = 'localhost'\n        nt = nt_user(user, tty or None, hostname, tstamp)\n        retlist.append(nt)\n    return retlist",
+        "desc": "Return currently connected users as a list of namedtuples."
+    },
+    {
+        "pe1": "system_19625",
+        "pe2": "def system(cmd):\n    \"\"\"Win32 version of os.system() that works with network shares.\n\n    Note that this implementation returns None, as meant for use in IPython.\n\n    Parameters\n    ----------\n    cmd : str\n      A command to be executed in the system shell.\n\n    Returns\n    -------\n    None : we explicitly do NOT return the subprocess status code, as this\n    utility is meant to be used extensively in IPython, where any return value\n    would trigger :func:`sys.displayhook` calls.\n    \"\"\"\n    # The controller provides interactivity with both\n    # stdin and stdout\n    #import _process_win32_controller\n    #_process_win32_controller.system(cmd)\n\n    with AvoidUNCPath() as path:\n        if path is not None:\n            cmd = '\"pushd %s &&\"%s' % (path, cmd)\n        return process_handler(cmd, _system_body)",
+        "desc": "Win32 version of os.system() that works with network shares.\n\n    Note that this implementation returns None, as meant for use in IPython.\n\n    Parameters\n    ----------\n    cmd : str\n      A command to be executed in the system shell.\n\n    Returns\n    -------\n    None : we explicitly do NOT return the subprocess status code, as this\n    utility is meant to be used extensively in IPython, where any return value\n    would trigger :func:`sys.displayhook` calls."
+    },
+    {
+        "pe1": "getoutput_20050",
+        "pe2": "def getoutput(cmd):\n    \"\"\"Return standard output of executing cmd in a shell.\n\n    Accepts the same arguments as os.system().\n\n    Parameters\n    ----------\n    cmd : str\n      A command to be executed in the system shell.\n\n    Returns\n    -------\n    stdout : str\n    \"\"\"\n\n    with AvoidUNCPath() as path:\n        if path is not None:\n            cmd = '\"pushd %s &&\"%s' % (path, cmd)\n        out = process_handler(cmd, lambda p: p.communicate()[0], STDOUT)\n\n    if out is None:\n        out = b''\n    return py3compat.bytes_to_str(out)",
+        "desc": "Return standard output of executing cmd in a shell.\n\n    Accepts the same arguments as os.system().\n\n    Parameters\n    ----------\n    cmd : str\n      A command to be executed in the system shell.\n\n    Returns\n    -------\n    stdout : str"
+    },
+    {
+        "pe1": "get_history_19740",
+        "pe2": "def get_history(self):\n        \"\"\"get all msg_ids, ordered by time submitted.\"\"\"\n        cursor = self._records.find({},{'msg_id':1}).sort('submitted')\n        return [ rec['msg_id'] for rec in cursor ]",
+        "desc": "get all msg_ids, ordered by time submitted."
+    },
+    {
+        "pe1": "info_21325",
+        "pe2": "def info(self):\n        \"\"\" Returns a description of the trait.\"\"\"\n        result = 'any of ' + repr(self.values)\n        if self._allow_none:\n            return result + ' or None'\n        return result",
+        "desc": "Returns a description of the trait."
+    },
+    {
+        "pe1": "Ainv_21332",
+        "pe2": "def Ainv(self):\n        'Returns a Solver instance'\n\n        if getattr(self, '_Ainv', None) is None:\n            self._Ainv = self.Solver(self.A, 13)\n            self._Ainv.run_pardiso(12)\n        return self._Ainv",
+        "desc": "Returns a Solver instance"
+    },
+    {
+        "pe1": "pip_version_check_15782",
+        "pe2": "def pip_version_check(session):\n    \"\"\"Check for an update for pip.\n\n    Limit the frequency of checks to once per week. State is stored either in\n    the active virtualenv or in the user's USER_CACHE_DIR keyed off the prefix\n    of the pip script path.\n    \"\"\"\n    import pip  # imported here to prevent circular imports\n    pypi_version = None\n\n    try:\n        state = load_selfcheck_statefile()\n\n        current_time = datetime.datetime.utcnow()\n        # Determine if we need to refresh the state\n        if \"last_check\" in state.state and \"pypi_version\" in state.state:\n            last_check = datetime.datetime.strptime(\n                state.state[\"last_check\"],\n                SELFCHECK_DATE_FMT\n            )\n            if total_seconds(current_time - last_check) < 7 * 24 * 60 * 60:\n                pypi_version = state.state[\"pypi_version\"]\n\n        # Refresh the version if we need to or just see if we need to warn\n        if pypi_version is None:\n            resp = session.get(\n                PyPI.pip_json_url,\n                headers={\"Accept\": \"application/json\"},\n            )\n            resp.raise_for_status()\n            pypi_version = resp.json()[\"info\"][\"version\"]\n\n            # save that we've performed a check\n            state.save(pypi_version, current_time)\n\n        pip_version = pkg_resources.parse_version(pip.__version__)\n\n        # Determine if our pypi_version is older\n        if pip_version < pkg_resources.parse_version(pypi_version):\n            logger.warning(\n                \"You are using pip version %s, however version %s is \"\n                \"available.\\nYou should consider upgrading via the \"\n                \"'pip install --upgrade pip' command.\" % (pip.__version__,\n                                                          pypi_version)\n            )\n\n    except Exception:\n        logger.debug(\n            \"There was an error checking the latest version of pip\",\n            exc_info=True,\n        )",
+        "desc": "Check for an update for pip.\n\n    Limit the frequency of checks to once per week. State is stored either in\n    the active virtualenv or in the user's USER_CACHE_DIR keyed off the prefix\n    of the pip script path."
+    }
+]

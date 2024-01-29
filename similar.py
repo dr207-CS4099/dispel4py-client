@@ -169,7 +169,7 @@ def ast_to_code_aux(ast, token_list):
         token_list.append(ast["leading"])
 
         # python specific, do not show the indent and dedent tokens
-        if not (config.REMOVE_INDENT_INFO and (ast['token'] == "<INDENT>" or ast['token'] == "<DEDENT>")):
+        if not (config.REMOVE_INDENT_INFO and (ast['token'] == "<INDENT>" or ast['token'] == "<DEDENT>" or ast['token'] == "<NEWLINE>")):
             token_list.append(ast["token"])
 
 

@@ -22,33 +22,33 @@ client2.register("noDesc","noDesc")
 client2.login("noDesc","noDesc")
 
 # #RandomwordProducer
-# client.search_Registry("PE to produce a random word", "pe", "text")
-# client2.search_Registry("agios", "pe", "text")
-# client2.search_Registry("""
+client.search_Registry("PE to produce a random word", "pe", "text")
+client2.search_Registry("agios", "pe", "text")
+client2.search_Registry("""
 
-#     def process(self, inputs=None):
-#         word = random.choice(RandomWordProducer.words)
-#         outputs = {"output": [word]}
-#         return outputs")
-#     """, "pe", "code")
-# # should this not be higher?
-# client.search_Registry("This PE produces a random word as an output.", "pe", "text")
-# client2.search_Registry("This PE produces a random word as an output.", "pe", "text")
+    def process(self, inputs=None):
+        word = random.choice(RandomWordProducer.words)
+        outputs = {"output": [word]}
+        return outputs")
+    """, "pe", "code")
+# should this not be higher?
+client.search_Registry("This PE produces a random word as an output.", "pe", "text")
+client2.search_Registry("This PE produces a random word as an output.", "pe", "text")
 
-# client2.search_Registry("check for prime input", "pe", "text")
+client2.search_Registry("check for prime input", "pe", "text")
 
-# #WordCounter
-# client2.search_Registry(" self.mywords[word] += 1", "pe", "code")
+#WordCounter
+client2.search_Registry(" self.mywords[word] += 1", "pe", "code")
 
 
 
-# client2.search_Registry('''
-#     class c:
-#         def test():
-#             for line in afinnfile:
-#                 term, score = line.split(
-#                     "\t"
-#                 )''', "pe", "code")
+client2.search_Registry('''
+    class c:
+        def test():
+            for line in afinnfile:
+                term, score = line.split(
+                    "\t"
+                )''', "pe", "code")
 
 client2.search_Registry('''class c:
         def test():
@@ -90,8 +90,8 @@ client2.search_Registry('''class c:
             'pid'
         ])
         return opts''', "pe", "code")
-# Why is the user id set to max pe_id += 1
-# Surely it should be PE independent and actually check the description updates
-# likewise, if the code is updated it should update itself aswell
-# surely that is trivial - generate pe_code and compare
-# yes performance overhead, but otherwise will make updating a nightmare
+
+# client.register("TestCorpus","TestCorpus")
+# client.login("TestCorpus","TestCorpus")
+
+# client.search_Registry('''class Get_conn(ProducerPE):\n    def _process(self):\n            \"\"\"Returns a connection object\n            \"\"\"\n            db = self.get_connection(getattr(self, self.conn_name_attr))\n            return self.connector.connect(\n                host=db.host,\n                port=db.port,\n                username=db.login,\n                schema=db.schema)''', "pe", "code")
