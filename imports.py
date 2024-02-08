@@ -1,11 +1,13 @@
-class _iptables_cmd(IterativePE):
+class Dict_repr_html_25(IterativePE):
     def __init__(self):
         IterativePE.__init__(self)
-    def _process(self, family='ipv4'):
-        '''
-        Return correct command based on the family, e.g. ipv4 or ipv6
-        '''
-        if family == 'ipv6':
-            return salt.utils.path.which('ip6tables')
-        else:
-            return salt.utils.path.which('iptables')
+    def _process(self, dictionary):
+        """
+        Jupyter Notebook magic repr function.
+        """
+        rows = ''
+        s = '<tr><td><strong>{k}</strong></td><td>{v}</td></tr>'
+        for k, v in dictionary.items():
+            rows += s.format(k=k, v=v)
+        html = '<table>{}</table>'.format(rows)
+        return html

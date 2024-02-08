@@ -233,7 +233,7 @@ class ConvertToPE:
         # adds a unique identifier if required
         if appendID != None:
             funcName = str(funcName) + "_" + str(appendID)
-        self.className = funcName
+        self.className = str(funcName)
         # capitalise the first letter so that it is the appropriate form for a class
         pe = "class " + str(funcName).capitalize() + "(" + peType.value + "):\n"
         pe += "    def __init__(self):\n        " + peType.value + ".__init__(self)\n"

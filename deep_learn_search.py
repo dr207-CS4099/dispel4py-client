@@ -8,6 +8,12 @@ import codecs
 from transformers import pipeline, AutoModel, AutoTokenizer
 from transformers import RobertaTokenizer, T5ForConditionalGeneration
 
+# used for evaluating
+similarity_cutoff = 0.8
+
+def set_similarity_cutoff(similarity):
+    global similarity_cutoff
+    similarity_cutoff = similarity
 
 model_text_to_code = pipeline(
     model="Lazyhope/RepoSim",
@@ -87,14 +93,20 @@ def similarity_search(user_query,all_pes,type):
 
     # Sort the dataframe based on cosine similarity
     sorted_df = all_pes_df_copy.sort_values(by="cosine_similarity", ascending=False)
-
+    
     # Retrieve the top 5 most similar documents
     top_5_similar_docs = sorted_df.head(5)
 
     selected_columns = ['peId', 'peName','description','cosine_similarity']
     print(top_5_similar_docs[selected_columns])
 
+    
+
+    evaluation_df = sorted_df[sorted_df.cosine_similarity > similarity_cutoff]
+    # print(evaluation_df[selected_columns])
+    return evaluation_df['peName']
+
     #Retrieve code column 
     obj_list = top_5_similar_docs["peCode"].apply(lambda x: pickle.loads(codecs.decode(x.encode(), "base64"))).tolist()
-
-    return obj_list
+    return top_5_similar_docs['peName']
+    # return obj_list

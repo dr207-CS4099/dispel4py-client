@@ -598,9 +598,9 @@ class WebClient:
         convertToAST = ConvertPy.ConvertPyToAST(search_payload.search, False)
         # TODO there is likely a more efficient way to do this
         setup_features([astEmbeddings], "./Aroma")
-        compare_similar(astEmbeddings, convertToAST.result, "./Aroma")    
+          
     
-        return similarity_search(search_dict['search'], response, query_type)
+        return similarity_search(search_dict['search'], response, query_type), compare_similar(astEmbeddings, convertToAST.result, "./Aroma")
 
     def get_Registry(self):
 

@@ -19,6 +19,15 @@ config = None
 vocab = None
 options = None
 
+min_pruned_score = 0.65
+min_similarity_score = 0.4
+
+def set_global_min_pruned_score(score):
+    global min_pruned_score
+    min_pruned_score = score
+
+def set_global_min_similarity_score(score):
+    global min_similarity_score
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -80,12 +89,12 @@ def parse_args():
 class Config:
     def __init__(self):
         self.MIN_MERGED_CODE = 3
-        self.MIN_PRUNED_SCORE = 0.65
+        self.MIN_PRUNED_SCORE = min_pruned_score
         self.N_PARENTS = 3
         self.N_SIBLINGS = 1
         self.N_VAR_SIBLINGS = 2
         self.NUM_SIMILARS = 5
-        self.MIN_SIMILARITY_SCORE = 0.4
+        self.MIN_SIMILARITY_SCORE = min_similarity_score
         self.VOCAB_FILE = "vocab.pkl"
         self.TFIDF_FILE = "tfidf.pkl"
         self.FEATURES_FILE = "features.json"
@@ -909,6 +918,7 @@ def cluster_and_intersect(
 
 
 def print_similar_and_completions(query_record, records, vectorizer, counter_matrix):
+    similarPEs = []
     candidate_records = find_similar(
         query_record,
         records,
@@ -951,9 +961,11 @@ def print_similar_and_completions(query_record, records, vectorizer, counter_mat
         j = 0
         for (candidate_record, score, pruned_record, pruned_score) in candidate_records:
             print(
-                f"idx = {j}:------------------- similar code ------------------ PE = {candidate_record['peName']} index = {candidate_record['index']}, score = {score}"
+                f"idx = {j}:------------------- similar code ------------------ PE = {candidate_record['peName']} index = {candidate_record['index']}, score = {score} pruned score = {pruned_score}"
             )
             print(ast_to_code(candidate_record["ast"]))
+            similarPEs.append(candidate_record['peName'])
+            print("adding")
             if config.PRINT_PRUNED:
                 print(
                     f"------------------- similar code (pruned) ------------------ score = {pruned_score}"
@@ -961,6 +973,7 @@ def print_similar_and_completions(query_record, records, vectorizer, counter_mat
                 print(ast_to_code(pruned_record["ast"]))
             j += 1
     print("", flush=True)
+    return similarPEs
 
 
 def collect_features_as_list(ast, is_init, is_counter):
@@ -1049,7 +1062,8 @@ def featurize_and_test_record_from_db(record_jsons, keywords):
     else:
         record_final["features"] = list(set_tmp.elements())
     if len(record_final["features"]) > 0:
-        print_similar_and_completions(record_final, options.records, options.vectorizer, options.counter_matrix)
+        # return the detected PEs here
+        return print_similar_and_completions(record_final, options.records, options.vectorizer, options.counter_matrix)
 
 
 def test_all():
@@ -1181,7 +1195,7 @@ def compare_similar(featurisedDataSet, searchVal, working_dir):
 
     vocab = Vocab.load()
 
-    featurize_and_test_record_from_db(searchVal, [])
+    return featurize_and_test_record_from_db(searchVal, [])
 
 
 # adds the features to the json files pertaining to each function
