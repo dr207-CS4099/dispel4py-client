@@ -20,6 +20,9 @@ URL_PE_ALL: str = BASE_URL_REGISTER + "/pe/all"
 
 URL_REGISTER_WORKFLOW: str = BASE_URL_REGISTER + "/workflow/add"
 
+URL_WORKFLOW_ALL: str = BASE_URL_REGISTER + "/workflow/all"
+
+
 URL_GET_WORKFLOW_NAME: str = BASE_URL_REGISTER + "/workflow/name/"
 
 URL_GET_WORKFLOW_ID: str = BASE_URL_REGISTER + "/workflow/id/"
@@ -41,6 +44,8 @@ URL_REGISTER_USER: str = "http://localhost:8080/auth/register"
 URL_LOGIN_USER: str =  "http://localhost:8080/auth/login"
 
 URL_SEARCH: str = BASE_URL_REGISTER + "/search/{}/type/{}"
+
+URL_GET_WORKFLOW_BY_PE: str = BASE_URL_REGISTER + "/workflow/byPeID/"
 
 PE_TYPES = (BasePE,IterativePE,ProducerPE,ConsumerPE,SimpleFunctionPE,CompositePE,GenericPE)
 

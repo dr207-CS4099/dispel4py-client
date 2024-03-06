@@ -10,9 +10,9 @@ from enum import Enum
 import json
 
 # takes a function as input and creates an equivalent PE
-# ProducerPE (takes no input, returns an output)
-# IterativePE (takes an input, returns an output)
-# ConsumerPE (takes an input, returns no output)
+    # ProducerPE (takes no input, returns an output)
+    # IterativePE (takes an input, returns an output)
+    # ConsumerPE (takes an input, returns no output)
 
 # create an __init__ that just creates it's type
 

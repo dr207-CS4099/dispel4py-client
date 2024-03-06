@@ -15,7 +15,6 @@ import json
 
 # translated from facebook aroma ConvertJava.java
 
-# TODO change these to being passed through?
 
 # this might actually be more efficient as we are not building a stack
 # and we theoretically are not multi threading so no need to be thread safe
@@ -51,9 +50,7 @@ identifiersRuleNames = [
             "NAME"]
 localVarContexts = ["atom"]
 
-# TODO use a class for these probably
 
-# todo CONVERT ALL OF THIS TO A CLASS 
 class ConvertPyToAST:
     
 
@@ -62,7 +59,7 @@ class ConvertPyToAST:
     def __init__(self, input, isFile):
         self.stackDepth = 0
         self.MAX_DEPTH = 1000
-        self.childHasLeaf = False # TODO?
+        self.childHasLeaf = False
         self.ruleNames = []
         self.beginLine = 0
         self.endLine = 0
@@ -120,7 +117,7 @@ class ConvertPyToAST:
         text = ""
         HIDDEN = 1
         if(lastIndexOfToken < 0):
-            # print("hello world")
+            
             return ""
         if(isBefore):
             ws = tokens.getHiddenTokensToLeft(lastIndexOfToken, HIDDEN)

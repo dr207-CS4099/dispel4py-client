@@ -51,15 +51,13 @@ summary_model = T5ForConditionalGeneration.from_pretrained('Salesforce/codet5-ba
 
 def generate_summary(text):
     
-    
     input_ids = tokenizer.encode(text, return_tensors="pt")
     generated_ids = summary_model.generate(input_ids, max_length=20)
     summary = tokenizer.decode(generated_ids[0], skip_special_tokens=True)
-    print(summary)
     return summary
 
 #SEARCH 
-def similarity_search(user_query,all_pes,type):
+def similarity_search(user_query,all_pes,type, search_type):
 
     #format all PEs response 
     all_pes_df = pd.json_normalize(all_pes)
@@ -97,16 +95,23 @@ def similarity_search(user_query,all_pes,type):
     # Retrieve the top 5 most similar documents
     top_5_similar_docs = sorted_df.head(5)
 
-    selected_columns = ['peId', 'peName','description','cosine_similarity']
+    if search_type == "pe":
+        selected_columns = ['peId', 'peName','description','cosine_similarity']
+    else:
+        selected_columns = ['workflowId', 'entryPoint', 'description','cosine_similarity']
+    
     print(top_5_similar_docs[selected_columns])
 
     
 
     evaluation_df = sorted_df[sorted_df.cosine_similarity > similarity_cutoff]
     # print(evaluation_df[selected_columns])
-    return evaluation_df['peName']
-
+    if(search_type == "pe"):
+        # TODO have this work with evaluation and returning the objects
+        return evaluation_df['peName']
+    else:
+        
     #Retrieve code column 
-    obj_list = top_5_similar_docs["peCode"].apply(lambda x: pickle.loads(codecs.decode(x.encode(), "base64"))).tolist()
-    return top_5_similar_docs['peName']
-    # return obj_list
+        obj_list = top_5_similar_docs["workflowCode"].apply(lambda x: pickle.loads(codecs.decode(x.encode(), "base64"))).tolist()
+    # return top_5_similar_docs['peName']
+        return obj_list

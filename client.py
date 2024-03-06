@@ -12,7 +12,7 @@ _QUERY_TYPES = Literal["text","code"]
  
 class d4pClient:
 
-    """Class to interact with registry 
+    """Class to interact with registry
     and server services"""
 
     def __init__(self):
@@ -242,12 +242,18 @@ class d4pClient:
         )
 
         # logger.info("Searched for \"" + search + "\"")
-
+        # TODO seperate text from code search here
         #Performing search similarity for PEs
-        if search_type == "pe": 
-            return WebClient.search_similarity(self,data,query_type)
+        if query_type == "code":
+            if search_type == "pe": 
+            
+                return WebClient.search_similarity(self,data)
+            elif search_type == "workflow": # TODO handle both
+
+                return WebClient.workflow_search_similarity(self, data)
+        
         else:
-            return WebClient.search(self,data)
+            return WebClient.desc_similarity(self,data, search_type)
     
     def describe(self, obj:any):
         """Describe PE or Workflow object 

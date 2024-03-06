@@ -228,9 +228,10 @@ def runSentimentAnalysis(dataFile):
                         print(unixcoder)
                         print(compare)
 
-                        # TODO compare previous version, why is this not brilliant?
+                    
                         for pe in aroma:
-                            if pe.lower() in compare:
+                            # [1] as this returns an id then name
+                            if pe[1].lower() in compare:
                                 foundAroma += 1 
                             else:
                                 unrelatedAroma += 1

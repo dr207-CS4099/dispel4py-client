@@ -16,7 +16,7 @@ import os
 
 
 import ConvertPy
-from Aroma.similar import setup_features, compare_similar, compareSimilar
+from Aroma.similar import setup_features, compare_similar
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format='%(message)s', level=logging.INFO) 
@@ -89,6 +89,7 @@ def get_objects(results):
 
     print("\nREGISTRY\n")
 
+
     
     for index, result in enumerate(results,start=1):
 
@@ -154,6 +155,7 @@ class PERegistrationData:
 
        
         pe_source_code = inspect.getsource(pe.__class__)
+
         pe_process_source_code = inspect.getsource(pe._process)
         self.pe_name = pe_name 
         self.pe_code = get_payload(pe)
@@ -161,7 +163,7 @@ class PERegistrationData:
         if description:
             self.description = description
         else:
-            self.description = generate_summary(pe_process_source_code)
+            self.description = generate_summary(pe_source_code)
 
         self.pe_source_code = pe_source_code
         self.pe_imports = create_import_string(pe_source_code)
@@ -192,7 +194,7 @@ class PERegistrationData:
     def __str__(self):
         return "PERegistrationData(" + json.dumps(self.to_dict(), indent=4) + ")"
 
-
+    #TODO remove this???
     def to_dict(self):
         return {
             "peName": self.pe_name,
@@ -220,7 +222,8 @@ class WorkflowRegistrationData:
         workflow_code: str = None,
         workflow_pes = None,  
         entry_point: str = None,
-        description: str = None
+        description: str = None,
+        descEmbedding: str = None,
     ):
 
         if workflow is not None: 
@@ -230,23 +233,37 @@ class WorkflowRegistrationData:
 
 
         workflow_pes = workflow.getContainedObjects() 
-       
+        workflow_source_code = "class " + entry_point + "():\n"
+        for pe in workflow_pes:
+            # print(inspect.getsource(pe.__class__))
+            pe_code = inspect.getsource(pe.__class__)
+            pe_code = pe_code.split("\n", 2)[2]
+            workflow_source_code += pe_code
+            workflow_source_code += "\n"
+        # print(workflow_source_code)
+        if description:
+            self.description = description
+        else:
+            
+            self.description = generate_summary(workflow_source_code)
+
+        # print(self.description)
         self.workflow_name = workflow_name 
         self.workflow_code = workflow_code 
         self.entry_point = entry_point
-        self.description = description
         self.workflow_pes = workflow_pes
-
+        self.desc_embedding = np.array_str(encode(self.description,1).numpy())
 
     def to_dict(self):
         return {
             "workflowName": self.workflow_name,
             "workflowCode": self.workflow_code,
             "entryPoint": self.entry_point,
-            "description": self.description
+            "description": self.description,
+            "descEmbedding" : self.desc_embedding
             
         }
-
+    
     def __str__(self):
         return "WorkflowRegistrationData(" + json.dumps(self.to_dict(), indent=4) + ")"
 
@@ -353,7 +370,7 @@ class WebClient:
         # each function indivually
         data = json.dumps(pe_payload.to_dict())
         response = req.post(URL_REGISTER_PE.format(globals.CLIENT_AUTH_ID), data=data,headers=headers)
-        print(response)
+        # print(response)
         response = json.loads(response.text)
 
         if 'ApiError' in response.keys():
@@ -369,8 +386,9 @@ class WebClient:
         verify_login()
 
         workflow_dict = workflow_payload.to_dict()
-        
+        # print(workflow_dict['descEmbedding'])
         data = json.dumps(workflow_dict)
+
         response = req.post(URL_REGISTER_WORKFLOW.format(globals.CLIENT_AUTH_ID), data=data,headers=headers) #add workflow resources 
         response = json.loads(response.text)
 
@@ -491,6 +509,7 @@ class WebClient:
 
         objectList = []
 
+
         for index, response in enumerate(response,start=1):
             pe_name = response['peName']
             pe_desc = response['description']
@@ -500,7 +519,7 @@ class WebClient:
 
             pe = "Result " + str(index) + ": \n" + "ID: " + str(response['peId']) + "\n" + "PE Name: " + pe_name + "\n" + "Description: " + pe_desc +"\n"
             obj = pickle.loads(codecs.decode(response['peCode'].encode(), "base64"))
-            print(pe)
+            # print(pe)
 
             objectList.append(obj)
         
@@ -546,20 +565,88 @@ class WebClient:
         else:
             logger.error(response['ApiError']['message'])
 
+
+
+            
+    def desc_similarity(self, search_payload: SearchData, search_type):
+        verify_login()
+        search_dict = search_payload.to_dict()
+
+        if(search_type == "workflow"):
+            url = URL_WORKFLOW_ALL.format(globals.CLIENT_AUTH_ID)
+        else:
+            url = URL_PE_ALL.format(globals.CLIENT_AUTH_ID)
+
+        
+        response = req.get(url=url)
+        response = json.loads(response.text)
+        
+        return similarity_search(search_dict['search'], response, "text", search_type)
+
     def search(self,search_payload: SearchData):
 
         verify_login()
 
         search_dict = search_payload.to_dict()
 
-        url = URL_SEARCH.format(globals.CLIENT_AUTH_ID,search_dict['search'],search_dict['searchType'])
-
+        
+        url = URL_SEARCH.format(globals.CLIENT_AUTH_ID,search_dict['search'], search_dict['searchType'])
+        print(url)
         response = req.get(url=url)
         response = json.loads(response.text)
 
+        # If this fails, then do lookup on the description
+        # print(response)
         return get_objects(response)
+    
 
-    def search_similarity(self, search_payload: SearchData, query_type):
+    # workflow similarity based on code - code search
+    def workflow_search_similarity(self, search_payload: SearchData):
+        # find pes similar to the code provided
+        _ , similarPEs = WebClient.search_similarity(self, search_payload)
+
+        
+        # find workflows that contain these pes
+        url = URL_GET_WORKFLOW_BY_PE.format(globals.CLIENT_AUTH_ID)
+        
+        objectList = []
+        index = 0
+        # recall that dictionaries are order post python 3.7
+        discoveredWorkflows = []
+        workflowPositions = {} # used to find the index by workflow
+        for pe in similarPEs:
+            
+            response = req.get(url=url + str(pe[0]))
+            response = json.loads(response.text)
+            
+            # add response to list of discovered
+            # remove any duplicates
+            for result in response:
+                if not result[0] in workflowPositions:
+                    workflowPositions[result[0]] = index
+                    discoveredWorkflows.append([result[0], result[1], result[2], result[3], index, 1])
+                    index += 1
+                else:
+                    discoveredWorkflows[workflowPositions[result[0]]][5] += 1
+
+
+        # sort by number of occurences, break ties by position
+        # 
+        discoveredWorkflows = sorted(discoveredWorkflows, key=lambda x: (-x[5], x[4]))
+        resultPos = 0
+        for workflow in discoveredWorkflows:
+
+            print("Result " + str(resultPos) + ": " + "ID: " + str(workflow[0]) + "\n" + "Workflow Name: " + workflow[1] + "\n" + "Description: " + workflow[2] + "\n")
+
+            objectList.append(pickle.loads(codecs.decode(workflow[3].encode(), "base64")))
+               
+
+            resultPos += 1
+        print("returning")
+        return objectList
+    
+    def search_similarity(self, search_payload: SearchData):
+        verify_login()
         search_dict = search_payload.to_dict()
 
         url = URL_PE_ALL.format(globals.CLIENT_AUTH_ID)
@@ -578,17 +665,14 @@ class WebClient:
             jsonData = None
             jsonData = json.loads(pe['astEmbedding'])
             
-            # adds the pe name to each function
+            # adds the pe name and id to each function
             for func in jsonData:
+
+                func['peId'] = pe['peId']
                 func['peName'] = pe['peName']
             
 
             astEmbeddings += jsonData
-            
-            
-        # ast similarity
-        print(len(astEmbeddings[1]))
-        print(search_payload.search)
 
         # convert to json style file for AST similarity
         # TODO currently will only work for classes
@@ -596,11 +680,12 @@ class WebClient:
         
 
         convertToAST = ConvertPy.ConvertPyToAST(search_payload.search, False)
+        
         # TODO there is likely a more efficient way to do this
         setup_features([astEmbeddings], "./Aroma")
           
     
-        return similarity_search(search_dict['search'], response, query_type), compare_similar(astEmbeddings, convertToAST.result, "./Aroma")
+        return similarity_search(search_dict['search'], response, "code", "pe"), compare_similar(astEmbeddings, convertToAST.result, "./Aroma")
 
     def get_Registry(self):
 

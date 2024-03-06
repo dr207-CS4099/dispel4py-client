@@ -885,8 +885,8 @@ def find_similar(
     min_similarity_score,
     min_pruned_score,
 ):
-    print("Query features: ")
-    print_features(query_record["features"])
+    # print("Query features: ")
+    # print_features(query_record["features"])
     similars = find_indices_similar_to_features(
         vectorizer,
         counter_matrix,
@@ -928,7 +928,7 @@ def print_similar_and_completions(query_record, records, vectorizer, counter_mat
         config.MIN_SIMILARITY_SCORE,
         config.MIN_PRUNED_SCORE,
     )
-    print_match_index(query_record, candidate_records)
+    # print_match_index(query_record, candidate_records)
     clustered_records = cluster_and_intersect(
         query_record,
         candidate_records,
@@ -964,8 +964,7 @@ def print_similar_and_completions(query_record, records, vectorizer, counter_mat
                 f"idx = {j}:------------------- similar code ------------------ PE = {candidate_record['peName']} index = {candidate_record['index']}, score = {score} pruned score = {pruned_score}"
             )
             print(ast_to_code(candidate_record["ast"]))
-            similarPEs.append(candidate_record['peName'])
-            print("adding")
+            similarPEs.append([candidate_record['peId'], candidate_record['peName']])
             if config.PRINT_PRUNED:
                 print(
                     f"------------------- similar code (pruned) ------------------ score = {pruned_score}"
@@ -1124,7 +1123,6 @@ def setup_from_db(records_file, dataset):
     global vocab
 
     config = Config()
-    logging.basicConfig(level=logging.DEBUG)
     random.seed(config.SEED)
     os.makedirs(options.working_dir, exist_ok=True)
 
@@ -1136,22 +1134,6 @@ def setup_from_db(records_file, dataset):
 
         featurisedDataSet = []
         i = 0
-        
-
-        # used when using the features.json file (and compareSimilar TODO delete soon)
-        # each line represents a pe, broken up into the relevant functions
-        # wpath = os.path.join(options.working_dir, config.FEATURES_FILE)
-        # with open(wpath, "w") as outp:
-        #     for line in dataset:
-        #         for func in line:
-        #             obj = func
-        #             obj["features"] = collect_features_as_list(obj["ast"], True, False)[0]
-        #             obj["index"] = i
-        #             i += 1
-        #             # featurisedDataSet.append(obj)
-        #             outp.write(json.dumps(obj))
-        #             outp.write("\n")
-    
 
         for line in dataset:
             for func in line:
@@ -1175,14 +1157,15 @@ def setup_from_db(records_file, dataset):
         return featurisedDataSet
 
 # called by web_client
-# it may be worth storing the tfidf.pkl and vocab.pkl files in the database
-# TODO consider this later
 def compare_similar(featurisedDataSet, searchVal, working_dir):
     global options, config, vocab
 
-    logging.basicConfig(level=logging.DEBUG)
+    
+    logging.disable(logging.ERROR)
     options = Options(working_dir)
     config = Config()
+
+
 
     (vectorizer, counter_matrix) = load_all_from_db(
     os.path.join(working_dir, config.TFIDF_FILE),
@@ -1194,7 +1177,7 @@ def compare_similar(featurisedDataSet, searchVal, working_dir):
     options.records = featurisedDataSet
 
     vocab = Vocab.load()
-
+    
     return featurize_and_test_record_from_db(searchVal, [])
 
 
@@ -1207,40 +1190,11 @@ def compare_similar(featurisedDataSet, searchVal, working_dir):
 def setup_features(dataset, working_dir):
     global options, config
 
-    logging.basicConfig(level=logging.DEBUG)
+    logging.disable(logging.ERROR)
     options = Options(working_dir)
-
 
     # setup the config and create the features file
     return setup_from_db(options.corpus, dataset)
-
-
-
-
-
-def compareSimilar(dataset, searchVal, working_dir):
-    global options, config
-
-    logging.basicConfig(level=logging.DEBUG)
-    options = Options(working_dir)
-
-
-    # setup the config and create the features file
-    setup_from_db(options.corpus, dataset)
-
-    print(config)
-    (vectorizer, counter_matrix, records) = load_all(
-    os.path.join(working_dir, config.TFIDF_FILE),
-    os.path.join(working_dir, config.FEATURES_FILE),
-    )
-
-    # stored in options to save passing around multiple vars
-    options.vectorizer = vectorizer
-    options.counter_matrix = counter_matrix
-    options.records = records
-
-
-    featurize_and_test_record_from_db(searchVal, [])
 
 
 

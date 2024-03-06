@@ -1,13 +1,14 @@
-class Dict_repr_html_25(IterativePE):
+class ReadRaDec(GenericPE):
+
     def __init__(self):
-        IterativePE.__init__(self)
-    def _process(self, dictionary):
-        """
-        Jupyter Notebook magic repr function.
-        """
-        rows = ''
-        s = '<tr><td><strong>{k}</strong></td><td>{v}</td></tr>'
-        for k, v in dictionary.items():
-            rows += s.format(k=k, v=v)
-        html = '<table>{}</table>'.format(rows)
-        return html
+        GenericPE.__init__(self)
+        self._add_output('output')
+    def _process(self, inputs):
+        file = inputs['input']
+        print('Reading file %s' % file)
+        with open(file) as f:
+            count = 0
+            for line in f:
+                count+= 1
+                ra, dec = line.strip().split(',')
+                self.write('output', [count, ra, dec, 0.001])
