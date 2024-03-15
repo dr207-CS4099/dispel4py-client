@@ -642,7 +642,6 @@ class WebClient:
                
 
             resultPos += 1
-        print("returning")
         return objectList
     
     def search_similarity(self, search_payload: SearchData):

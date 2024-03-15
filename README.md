@@ -10,13 +10,14 @@ Then enter directory by
 ```
 cd dispel4py-client
 ```
-In order to run the application you need to create a new Python 3.10 enviroment 
+In order to run the application you need to create a new Python 3.10 environment 
 ```
 --note conda must be installed beforehand, go to https://conda.io/projects/conda/en/stable/user-guide/install/linux.html
 conda create --name py10 python=3.10
 conda activate py10
 --or venv (recommended for lab machines)
 python -m venv .
+source bin/activate
 ```
 (for lab machines upgrade pip)
 ```

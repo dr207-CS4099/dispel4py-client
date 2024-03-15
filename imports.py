@@ -1,14 +1,15 @@
-class ReadRaDec(GenericPE):
-
+class InternalExtinction(IterativePE):
     def __init__(self):
-        GenericPE.__init__(self)
-        self._add_output('output')
-    def _process(self, inputs):
-        file = inputs['input']
-        print('Reading file %s' % file)
-        with open(file) as f:
-            count = 0
-            for line in f:
-                count+= 1
-                ra, dec = line.strip().split(',')
-                self.write('output', [count, ra, dec, 0.001])
+        IterativePE.__init__(self)
+    def _process(self, data):
+        count, ra, dec = data[0:3]
+        mtype = data[3]
+        logr25 = data[4]
+        print("!! DATA mytype:%s, logr25:%s" %(mtype,logr25))
+        try:
+            t, ai = internal_extinction(mtype, logr25)
+            result = [count, ra, dec, mtype, logr25, t, ai]
+            print('internal extinction: %s' % result)
+            return result
+        except:
+            print('KIG%s: failed to calculate internal extinction' % count)

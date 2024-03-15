@@ -50,7 +50,6 @@ summary_model = T5ForConditionalGeneration.from_pretrained('Salesforce/codet5-ba
 # summary_model = AutoModel.from_pretrained("microsoft/unixcoder-base")
 
 def generate_summary(text):
-    
     input_ids = tokenizer.encode(text, return_tensors="pt")
     generated_ids = summary_model.generate(input_ids, max_length=20)
     summary = tokenizer.decode(generated_ids[0], skip_special_tokens=True)

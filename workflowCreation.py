@@ -44,11 +44,11 @@ client2.login("testUser","testUser")
 
 
 # register pes
-# client2.register_PE(read)
-# client2.register_PE(votab)
-# client2.register_PE(votab2)
-# client2.register_PE(filt)
-# client2.register_PE(intext)
+client2.register_PE(read)
+client2.register_PE(votab)
+client2.register_PE(votab2)
+client2.register_PE(filt)
+client2.register_PE(intext)
 
 #register workflow
-client2.register_Workflow(graph, "Astro_physics")
+client2.register_Workflow(graph, "Astro_physics2")
