@@ -49,17 +49,17 @@ class CountWords(GenericPE):
     def _postprocess(self):
         self.write('output', self.count)
 
-split = SplitLines()
-words = SplitWords()
-count = CountWords()
+# split = SplitLines()
+# words = SplitWords()
+# count = CountWords()
 
 
-graph = WorkflowGraph()
-graph.connect(split, 'output', words, 'input')
-graph.connect(words, 'output', count, 'input')
+# graph = WorkflowGraph()
+# graph.connect(split, 'output', words, 'input')
+# graph.connect(words, 'output', count, 'input')
 
 
-client = d4pClient()
+# client = d4pClient()
 
 #SIMPLE 
 #simple_process(graph, {split: [ {'input' : "Hello Hello algo mas World World"}]})

@@ -379,7 +379,6 @@ def counter_vectorize(rpath, wpath):
         pickle.dump((vectorizer, counter_matrix), outf)
 
 # counter vectorisation, from dataset instead of file
-# TODO potentially remove write to file
 def counter_vectorize_from_db(dataset, wpath):
     documents = []
     for func in dataset:
@@ -387,6 +386,8 @@ def counter_vectorize_from_db(dataset, wpath):
         documents += [feature_list_to_doc(x) for x in func]
     vectorizer = CountVectorizer(min_df=1, binary=True)
     counter_matrix = vectorizer.fit_transform(documents)
+
+    # Not really used beyond the evalution of Aroma paper (comparing TF-IDF to aroma search)
     with open(wpath, "wb") as outf:
         pickle.dump((vectorizer, counter_matrix), outf)
 
@@ -1126,7 +1127,6 @@ def setup_from_db(records_file, dataset):
     random.seed(config.SEED)
     os.makedirs(options.working_dir, exist_ok=True)
 
-    # TODO do  we ever want to just load the vocab?
     if records_file is None:
         vocab = Vocab.load()
     else:
@@ -1147,7 +1147,7 @@ def setup_from_db(records_file, dataset):
 
         vocab.dump()
         logging.info("Done featurizing.")
-        #TODO what to do with these files?
+        # only used by Aroma for evaluating it against TFIDF (could remove as is not used)
         counter_vectorize_from_db(
             dataset,
             os.path.join(options.working_dir, config.TFIDF_FILE),
@@ -1201,9 +1201,9 @@ def setup_features(dataset, working_dir):
 
 
 
-# TODO flesh out further as required
+# flesh out further as required
 class Options:
-    corpus = True # TODO test difference when none
+    corpus = True
     working_dir = ""
     vectorizer = None
     counter_matrix = None

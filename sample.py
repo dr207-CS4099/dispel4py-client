@@ -49,8 +49,8 @@ client = d4pClient()
 
 #Create User and Login 
 print("\n Create User and Login \n")
-client.register("root","root")
-client.login("root","root")
+client.register("root1","root1")
+client.login("root1","root1")
 
 print("\n Register Graph \n")
 client.register_Workflow(graph,"graph1")

@@ -163,19 +163,18 @@ class PERegistrationData:
         if description:
             self.description = description
         else:
-            self.description = generate_summary(pe_source_code)
+            self.description = generate_summary(pe_source_code).replace(" class ", " pe ")
 
         self.pe_source_code = pe_source_code
         self.pe_imports = create_import_string(pe_source_code)
         self.code_embedding = np.array_str(encode(pe_process_source_code,2).numpy())
         self.desc_embedding = np.array_str(encode(self.description,1).numpy())
-        
+        # self.desc_embedding = None
 
         # convert to json style file for AST similarity
         convertToAST = ConvertPy.ConvertPyToAST(pe_source_code, False)
 
         # featurisation allows for storing the relevant features for the similarity analysis
-        # TODO need a better way to store this directory
         featurisedAST = setup_features([convertToAST.result], "./Aroma")
         self.astEmbedding = str(json.dumps(featurisedAST))
 
@@ -194,18 +193,6 @@ class PERegistrationData:
     def __str__(self):
         return "PERegistrationData(" + json.dumps(self.to_dict(), indent=4) + ")"
 
-    #TODO remove this???
-    def to_dict(self):
-        return {
-            "peName": self.pe_name,
-            "peCode": self.pe_code,
-            "sourceCode": self.pe_source_code, 
-            "description": self.description,
-            "peImports": self.pe_imports,
-            "codeEmbedding": self.code_embedding,
-            "descEmbedding": self.desc_embedding,
-            "astEmbedding" : self.astEmbedding
-        }
 
     def __str__(self):
         return "PERegistrationData(" + json.dumps(self.to_dict(), indent=4) + ")"
@@ -223,7 +210,7 @@ class WorkflowRegistrationData:
         workflow_pes = None,  
         entry_point: str = None,
         description: str = None,
-        descEmbedding: str = None,
+        desc_embedding: str = None,
     ):
 
         if workflow is not None: 
@@ -245,9 +232,9 @@ class WorkflowRegistrationData:
             self.description = description
         else:
             
-            self.description = generate_summary(workflow_source_code)
+            self.description = generate_summary(workflow_source_code).replace(" class ", " workflow ")
 
-        # print(self.description)
+        
         self.workflow_name = workflow_name 
         self.workflow_code = workflow_code 
         self.entry_point = entry_point
@@ -255,6 +242,7 @@ class WorkflowRegistrationData:
         self.desc_embedding = np.array_str(encode(self.description,1).numpy())
 
     def to_dict(self):
+        
         return {
             "workflowName": self.workflow_name,
             "workflowCode": self.workflow_code,
@@ -488,6 +476,7 @@ class WebClient:
 
         else: 
             logger.info("Successfully retrieved Workflow " + response["entryPoint"])
+            logger.info("Workflow Description: " + str(response["description"]))
             workflowCode = response["workflowCode"]
             unpickled_result: WorkflowGraph = pickle.loads(codecs.decode(workflowCode.encode(), "base64"))
             return unpickled_result
@@ -674,17 +663,19 @@ class WebClient:
             astEmbeddings += jsonData
 
         # convert to json style file for AST similarity
-        # TODO currently will only work for classes
+
 
         
 
         convertToAST = ConvertPy.ConvertPyToAST(search_payload.search, False)
-        
-        # TODO there is likely a more efficient way to do this
         setup_features([astEmbeddings], "./Aroma")
           
-    
-        return similarity_search(search_dict['search'], response, "code", "pe"), compare_similar(astEmbeddings, convertToAST.result, "./Aroma")
+        result = []
+        for converted in convertToAST.result:
+            result += compare_similar(astEmbeddings, [converted], "./Aroma")
+
+
+        return similarity_search(search_dict['search'], response, "code", "pe"), result
 
     def get_Registry(self):
 

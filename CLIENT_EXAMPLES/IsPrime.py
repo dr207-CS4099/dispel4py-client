@@ -33,15 +33,15 @@ class PrintPrime(ConsumerPE):
         # this PE consumes one input
         print("the num %s is prime" % num)
 
-producer = NumberProducer()
-isprime = IsPrime()
-printprime = PrintPrime()
+# producer = NumberProducer()
+# isprime = IsPrime()
+# printprime = PrintPrime()
 
-graph = WorkflowGraph()
-graph.connect(producer, 'output', isprime, 'input')
-graph.connect(isprime, 'output', printprime, 'input')
+# graph = WorkflowGraph()
+# graph.connect(producer, 'output', isprime, 'input')
+# graph.connect(isprime, 'output', printprime, 'input')
 
-client = d4pClient()
+# client = d4pClient()
 
 #SIMPLE 
 #simple_process(graph, {producer: 5})
@@ -54,5 +54,5 @@ client = d4pClient()
 #REDIS 
 #producer.name='producer'
 #dyn_process(graph,{'producer': 5}, edict({'num':5,'iter':5, 'simple':False, 'redis_ip':'localhost', 'redis_port':'6379'}))
-client.run(graph,input=5,process=Process.DYNAMIC,args= edict({'num':5,'iter':5, 'simple':False, 'redis_ip':'localhost', 'redis_port':'6379'}))
+# client.run(graph,input=5,process=Process.DYNAMIC,args= edict({'num':5,'iter':5, 'simple':False, 'redis_ip':'localhost', 'redis_port':'6379'}))
 

@@ -13,16 +13,12 @@ from dispel4py.utils import *
 
 #Create User and Login 
 print("\n Create User and Login \n")
-# client = d4pClient()
-# client.register("root","root")
-# client.login("root","root")
 
 client2 = d4pClient()
 client2.register("noDesc","noDesc")
 client2.login("noDesc","noDesc")
 
 # #RandomwordProducer
-# client.search_Registry("PE to produce a random word", "pe", "text")
 # client2.search_Registry("agios", "pe", "text")
 # client2.search_Registry("""
 
@@ -43,37 +39,29 @@ client2.login("noDesc","noDesc")
 
 
 # client2.search_Registry('''
-#     class c:
-#         def test():
-#             for line in afinnfile:
-#                 term, score = line.split(
-#                     "\t"
-#                 )''', "pe", "code")
+# for line in afinnfile:
+#     term, score = line.split(
+#         "\t"
+#     )''', "pe", "code")
 
-# client2.search_Registry('''class c:
-#         def test():
-#             GenericPE.__init__(self)
-#             self._add_input("input", grouping=[2, 3])
-#             self._add_output("output")
-#             self.mood = {}
-#             self.happiest = None, -5000''', "pe", "code")
 
-client2.search_Registry('''class c:
-    def _process(self, data):
-         # check that we have recognised any words, then find a median of the score
-        if count == 0:
-                avg = sent
-        else:
-            avg = sent / count
-                        
-        return (article, avg_score, self.method)''', "pe", "code")
+
+# client2.search_Registry('''
+# def _process(self,data):
+#     # check that we have recognised any words, then find a median of the score
+#     if count == 0:
+#             avg = sent
+#     else:
+#         avg = sent / count
+                
+#     return (article, avg_score, self.method)''', "pe", "code")
 # class BASE64_b64decode
-client2.search_Registry('''class c:
-def test():
-    try:
-        decoder()
-    except UnicodeDecodeError:
-        return decoded''', "pe", "code")
+# client2.search_Registry('''class c:
+# def test():
+#     try:
+#         decoder()
+#     except UnicodeDecodeError:
+#         return decoded''', "pe", "code")
 #API config
 # client2.search_Registry('''class c:
 #     def test():
@@ -91,7 +79,16 @@ def test():
 #         ])
 #         return opts''', "pe", "code")
 
-# client.register("TestCorpus","TestCorpus")
-# client.login("TestCorpus","TestCorpus")
+# This file contains a selection of example PE searches based on the PEs in testPEs
+# these were generated from a subsection of codeSearchNet python functions
+# if running this on a new system, you will need to run uploadExamples.py first
 
-# client.search_Registry('''class Get_conn(ProducerPE):\n    def _process(self):\n            \"\"\"Returns a connection object\n            \"\"\"\n            db = self.get_connection(getattr(self, self.conn_name_attr))\n            return self.connector.connect(\n                host=db.host,\n                port=db.port,\n                username=db.login,\n                schema=db.schema)''', "pe", "code")
+
+
+client2.search_Registry('''class c:
+        def example(self):
+            return true
+        def test():
+            GenericPE.__init__(self)
+            self.mood = {}
+            self.happiest = None, -5000''', "pe", "code")

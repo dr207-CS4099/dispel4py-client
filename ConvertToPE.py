@@ -110,7 +110,7 @@ class ConvertToPE:
             ws = tokens.getHiddenTokensToRight(lastIndexOfToken, HIDDEN)
         if(ws != None):
             for wst in ws:
-                # TODO consider optimisation
+
                 text += wst.text
         return text
     
@@ -273,7 +273,6 @@ class ConvertToPE:
         for i in range(numChildren):
             childTree = tree.getChild(i)
             if(isinstance(childTree, TerminalNodeImpl)):
-                # TODO consider using a string builder etc
                 # remove the explicit newline, indent and dedent chars
                 text += self.getLeadingOrTrailing(childTree, tokens, True)
                 if childTree.getText() != "<INDENT>" and childTree.getText() != "<DEDENT>" and childTree.getText() != "<NEWLINE>":
@@ -290,7 +289,8 @@ class ConvertToPE:
 
 # print(ConvertToPE(testStr, False, 3).pe)
 
-# read from json
+# shows how to read from json should you wish to upload a dataset in this way
+# (file is the destination, data_file is the source)
 # file = open("C:/Users/danie/Desktop/Laminar/dispel4py-client/testPEs.py", "a")
 # with open("C:/Users/danie/Desktop/Laminar/python_train_1.jsonl") as data_file:
 #     for line in data_file:
@@ -301,9 +301,4 @@ class ConvertToPE:
 #             print(converted.pe)
 #             file.write(converted.pe + "\n")
             
-
-
-# TODO consider using variable for tab sizes etc
-
-
 

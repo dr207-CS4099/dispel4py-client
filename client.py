@@ -242,14 +242,12 @@ class d4pClient:
         )
 
         # logger.info("Searched for \"" + search + "\"")
-        # TODO seperate text from code search here
         #Performing search similarity for PEs
         if query_type == "code":
             if search_type == "pe": 
             
                 return WebClient.search_similarity(self,data)
-            elif search_type == "workflow": # TODO handle both
-
+            else:
                 return WebClient.workflow_search_similarity(self, data)
         
         else:

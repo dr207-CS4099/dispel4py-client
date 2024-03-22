@@ -86,7 +86,11 @@ class ConvertPyToAST:
 
         self.setRuleNames(parser)
         self.setSymbolicNames(lexer)
-        self.getSerializedTree(tree, stream)
+        fullAST = self.getSerializedTree(tree, stream)
+        # if no methods, then we take the whole input as the AST
+        if(self.totalMethods == 0):
+            self.dumpMethodAST("function_def_raw", fullAST, True)
+            # print(fullAST)
 
 
 
@@ -125,16 +129,13 @@ class ConvertPyToAST:
             ws = tokens.getHiddenTokensToRight(lastIndexOfToken, HIDDEN)
         if(ws != None):
             for wst in ws:
-                # TODO consider optimisation
+                
                 text += wst.text
         return text
-    def dumpMethodAST(self, thisRuleName, simpleTree):
-        # TODO do we actually care about there being a class?
+    def dumpMethodAST(self, thisRuleName, simpleTree, fullAST=False):
         # only write the functions to the JSON file, to avoid duplication
-        # TODO test the effectiveness of this using functions and using class (on similarity)
-        if (self.thisClassName != None and thisRuleName == "function_def_raw"):
+        if (thisRuleName == "function_def_raw" or fullAST == True):
             # print(simpleTree)
-            # TODO what is this doing?
             if(len(simpleTree) == 2):
                 try:
                     simpleTree = json.dumps(simpleTree[1])
@@ -208,11 +209,9 @@ class ConvertPyToAST:
         simpleTree = []
         simpleTree.append("")
 
-        # TODO consider using as string builder etc
+        # could use some form of string builder if it was really necessary
         text = ""
-        # TODO consider optimisation
-        # https://stackoverflow.com/questions/2414667/python-string-class-like-stringbuilder-in-c
-
+    
         for i in range(numChildren):
             childTree = tree.getChild(i)
             # is a leaf
@@ -247,7 +246,6 @@ class ConvertPyToAST:
                         isLeaf = False
                         text += s
                     
-                    # TODO can this be put in the if above?
                     if isLeaf: tok["leaf"] = isLeaf
                     tok["line"] = thisToken.line
                     simpleTree.append(tok)
@@ -292,5 +290,15 @@ class ConvertPyToAST:
 # calling from command line
 if __name__ == '__main__':
     # print("hello world")
-    converted = ConvertPyToAST(sys.argv[1], True)
+    codeStr = '''
+class isEven(IterativePE):
+    def __init__(self):
+        IterativePE.__init__(self)
+    def _process(self, input):
+        if (input % 2 == 0):
+            return True
+    
+        else:
+            return False'''
+    converted = ConvertPyToAST(codeStr, False)
     print(converted.result)

@@ -41,7 +41,6 @@ def createSimilarPEData(outputFile):
 
                 # not necessary for pe2, as this will not be uploaded, and is used to target pe1
                 pe2 = ConvertToPE(input['whole_func_string'], False, numFound)
-            # TODO what is causing this?
             except:
                 continue
             if pe1.pe == None or pe2.pe == None:
@@ -69,68 +68,6 @@ def createSimilarPEData(outputFile):
         json.dump(searchPEs, f, ensure_ascii=False, indent=4)
 
 
-
-
-# creates the other way around
-# will delete soon
-# def createSimilarPEDataOld(outputFile):
-    
-#     ds = load_dataset("code_search_net", "python", trust_remote_code=True)
-#     print(ds)
-#     matching = {}
-#     lookupPEs = [] # used to search for the uploaded pe pair
-#     uploadPEs = set() # link id to the upload pe
-
-    
-#     # need unique id for the name, use the unique id in both,
-#     # ensure that equivalent pes are not uploaded twice (somehow need to check for equivalence?)
-#     for input in ds['test']:
-        
-#         if input['func_documentation_string'] in matching:
-#             print(matching[input['func_documentation_string']][1])
-#             # convert to pes
-#             try:
-#                 # use the id value (from (len(matching) at the time of insertion) as a unique identifier for this function
-#                 # as there may be two functions (ie get_object()) that are not similar but share the same name
-#                 # and we want to be able to distinguish them without restricting our corpus size
-#                 pe1 = ConvertToPE(matching[input['func_documentation_string']][0], False, matching[input['func_documentation_string']][1])
-
-#                 # not necessary for pe2, as this will not be uploaded, and is used to target pe1
-#                 pe2 = ConvertToPE(input['whole_func_string'], False)
-#             # TODO what is causing this?
-#             except:
-#                 continue
-#             if pe1.pe == None or pe2.pe == None:
-#                 continue
-
-#             # write pe2.pe to the upload pes
-#             # only
-#             if pe1.className in searchPEs:
-#                 searchPEs[pe1.className]['relatedPEs'].append(pe2.className)
-#             else:
-#                 searchPEs[pe1.className] = {'pe1' : pe1.pe,
-#                                             'relatedPEs' :[pe2.className],
-#                                             'desc' : input['func_documentation_string']
-#                                             }
-#             temp = {'pe1' : pe1.className,
-#                     'pe2' : input['whole_func_string'],
-#                     'desc' : input['func_documentation_string']}
-#             lookupPEs.append(temp)        
-#             uploadPEs.add(pe1.pe)
-
-#         else:
-#             # print("failed")
-#             matching[input['func_documentation_string']] = [input['whole_func_string'], len(matching)]
-
-
-#     # create 
-#     print("created: " + str(len(lookupPEs)) + " code pairs")
-
-#     writePEToPYFile(uploadPEs)
-#     with open(outputFile, 'w', encoding='utf-8') as f:
-#         json.dump(lookupPEs, f, ensure_ascii=False, indent=4)
-
-
 def writePEToPYFile(data):
     # need to be able to write the upload example to a file
     # store it's name, with pe2 in the data.json
@@ -146,8 +83,8 @@ def writePEToPYFile(data):
 def uploadPEData(inputFile):
     client = d4pClient()
     print("\n Create User and Login \n")
-    client.register("TestCorpus","TestCorpus")
-    client.login("TestCorpus","TestCorpus")
+    client.register("TestCorpusDesc2","TestCorpusDesc2")
+    client.login("TestCorpusDesc2","TestCorpusDesc2")
 
     print(inspect.getmembers(sys.modules[inputFile]))
     classes = [[cls_name, cls_obj] for cls_name, cls_obj in inspect.getmembers(sys.modules[inputFile]) if inspect.isclass(cls_obj) and issubclass(cls_obj, GenericPE)]
@@ -173,17 +110,17 @@ def runSentimentAnalysis(dataFile):
     # checks if the expected pe is found
     with open(dataFile , "r") as file:
         file = json.load(file)
-
+        
         
         
 
         dropAmounts = [0, 0.25, 0.5, 0.75, 0.9]
 
         
-        set_global_min_pruned_score(0.3)
-        set_global_min_similarity_score(0.25)
+        # set_global_min_pruned_score(0.3)
+        # set_global_min_similarity_score(0.25)
         with open("outputAdditional.csv", "w") as csvFile:
-            csvFile.write("foundAroma,foundUnixcoder,potential,unrelatedAroma,unrelatedUnixcoder,dropAmount,im\n")
+            csvFile.write("foundAroma,foundUnixcoder,potential,unrelatedAroma,unrelatedUnixcoder,dropAmount,sim\n")
             for dropAmount in dropAmounts:
                 for similarity in range(1,10):
                     
@@ -198,35 +135,35 @@ def runSentimentAnalysis(dataFile):
                     set_similarity_cutoff(sim)
                     set_global_min_pruned_score(sim)
                     set_global_min_similarity_score(sim)
-                    i = 0
+                    i=0
                     for name, pePair in file.items():
 
-                        i += 1
-                        if i == 10:
-                            break
+                        # i += 1
+                        # if i == 10:
+                        #     break
                         # print("expecting: " + pePair['pe1'])
                         formatted = pePair['pe1'].splitlines()
 
                         # drop last n% of the search query
-                        # TODO also use the version that is in the db?
                         # floor division
                         header = formatted[0]
-                        formatted.pop()
+                        formatted.pop(0)
+                        # print(formatted)
                         cutSize = math.ceil(len(formatted) * dropAmount)
-                        print(cutSize)
+                        # print(cutSize)
                         cutPE = "\n".join(formatted[cutSize:])
                         cutPE = header + "\n" + cutPE
-                        print(header)
-                        print(cutPE)
-
+                        # print(header)
+                        # print(cutPE)
+                        
                         
                         unixcoder, aroma = client.search_Registry(cutPE, "pe", "code")
-                        print(unixcoder)
+                        # print(unixcoder)
                         compare = set(pePair['relatedPEs'])
                         potential += len(compare)
-                        print(aroma)
-                        print(unixcoder)
-                        print(compare)
+                        # print(aroma)
+                        # print(unixcoder)
+                        # print(compare)
 
                     
                         for pe in aroma:
@@ -244,40 +181,14 @@ def runSentimentAnalysis(dataFile):
                     csvFile.write(f"{foundAroma}, {foundUnixcoder}, {potential}, {unrelatedAroma}, {unrelatedUnixcoder}, {dropAmount}, {sim}\n")
                     print("Aroma found " + str(foundAroma) + " of " + str(potential) + " and recalled unrelated: " + str(unrelatedAroma))
                     print("UnixCoder found " + str(foundUnixcoder) + " of " + str(potential) + " and recalled unrelated: " + str(unrelatedUnixcoder))   
-
-#     client.search_Registry('''def get_conn(self):
-#         """Returns a connection object"""
-#         db = self.get_connection(self.presto_conn_id)
-#         reqkwargs = None
-#         if db.password is not None:
-#             reqkwargs = {'auth': HTTPBasicAuth(db.login, db.password)}
-#         return presto.connect(
-#             host=db.host,
-#             port=db.port,
-#             username=db.login,
-#             source=db.extra_dejson.get('source', 'airflow'),
-#             protocol=db.extra_dejson.get('protocol', 'http'),
-#             catalog=db.extra_dejson.get('catalog', 'hive'),
-#             requests_kwargs=reqkwargs,
-#             schema=db.schema)''', "pe", "code")
-    
-#     client.search_Registry('''def _process(self):
-#             """Returns a connection object
-#             """
-#             db = self.get_connection(getattr(self, self.conn_name_attr))
-#             return self.connector.connect(
-#                 host=db.host,
-#                 port=db.port,
-#                 username=db.login,
-#                 schema=db.schema)
-# ''', "pe", "code")
-    
-
-#     client.search_Registry('''def _process(self):\n            \"\"\"\n            Default filters for model\n            \"\"\"\n            return (\n                super().get_count_query()\n                .filter(models.DagModel.is_active)\n                .filter(~models.DagModel.is_subdag)\n            )"'''
-#                            , "pe", "code")
+                    
 dataFile = "./Aroma/data.json"
+
+# uncomment to create dataset
 # createSimilarPEData(dataFile)
 
+#uncomment to upload datasest
 # uploadPEData('Aroma.data')
 
 runSentimentAnalysis(dataFile)
+

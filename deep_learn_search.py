@@ -3,13 +3,18 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import pandas as pd
 import torch
-import cloudpickle as pickle # TODO add as requirement
+import cloudpickle as pickle
 import codecs
 from transformers import pipeline, AutoModel, AutoTokenizer
 from transformers import RobertaTokenizer, T5ForConditionalGeneration
-
+import os
 # used for evaluating
 similarity_cutoff = 0.8
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+
+
 
 def set_similarity_cutoff(similarity):
     global similarity_cutoff
@@ -29,6 +34,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 def encode(string, model_type):
     if model_type == 1:
         with torch.no_grad():
+            
             embedding = model_text_to_code.encode(string, 512)
         final_t=embedding.squeeze()
 
@@ -38,6 +44,7 @@ def encode(string, model_type):
             outputs = model_code_completion(**inputs)
             embedding = outputs.last_hidden_state.mean(dim=1)  # You can use any pooling strategy here
         final_t = embedding.squeeze()
+
     return final_t
 
 # CODE SUMMARIZATION
@@ -106,7 +113,6 @@ def similarity_search(user_query,all_pes,type, search_type):
     evaluation_df = sorted_df[sorted_df.cosine_similarity > similarity_cutoff]
     # print(evaluation_df[selected_columns])
     if(search_type == "pe"):
-        # TODO have this work with evaluation and returning the objects
         return evaluation_df['peName']
     else:
         
